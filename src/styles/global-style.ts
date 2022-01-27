@@ -23,6 +23,31 @@ const globalCss = css`
   *:after {
     box-sizing: inherit;
   }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+
+    &:focus {
+      outline: 2px solid ${({ theme }) => theme.colors.selectedFont};
+    }
+  }
+
+  button,
+  input[type="submit"],
+  input[type="reset"] {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+
+    &:focus {
+      outline: 2px solid ${({ theme }) => theme.colors.selectedFont};
+    }
+  }
 `;
 
 export const GlobalStyle = createGlobalStyle`

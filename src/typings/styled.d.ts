@@ -7,6 +7,7 @@ declare module "styled-components" {
       | "pageBackground"
       | "regularFont"
       | "fadedOutFont"
+      | "selectedFont"
       | "border"
       | "buttonGradientStart"
       | "buttonGradientMid"
@@ -19,6 +20,13 @@ declare module "styled-components" {
       | "usdcAccent"
       | "mgUsdcAccent",
       string
+    >;
+    sizing: Record<
+      | "pageSidePaddingPx"
+      | "pageMaxWidthPx"
+      | "pageContentMaxWidth"
+      | "cardBorderRadiusPx",
+      number
     >;
   }
 }

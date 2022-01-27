@@ -6,6 +6,7 @@ export const darkTheme: DefaultTheme = {
     pageBackground: "#04020C",
     regularFont: "#FFFFFF",
     fadedOutFont: "#575B6A",
+    selectedFont: "#dcaae3",
     border: "#333744",
     buttonGradientStart: "#4700FF",
     buttonGradientMid: "#DB69C2",
@@ -17,5 +18,11 @@ export const darkTheme: DefaultTheme = {
     sliderAxisLines: "#333744",
     usdcAccent: "#2775CA",
     mgUsdcAccent: "#6231DF",
+  },
+  sizing: {
+    pageSidePaddingPx: 96,
+    pageMaxWidthPx: 1740 + 96 + 96,
+    pageContentMaxWidth: 1144 + 96 + 96,
+    cardBorderRadiusPx: 20,
   },
 };

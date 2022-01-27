@@ -1,9 +1,11 @@
 import { FC, SVGProps } from "react";
 
 import { ReactComponent as MagikLogoIcon } from "./icons/magik-logo.svg";
+import { ReactComponent as WalletIcon } from "./icons/wallet.svg";
 
 const iconComponents = {
   "magik-logo": MagikLogoIcon,
+  wallet: WalletIcon,
 };
 
 export type IconName = keyof typeof iconComponents;

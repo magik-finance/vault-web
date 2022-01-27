@@ -1,5 +1,20 @@
 import { VFC } from "react";
 
-import { Container } from "./Dashboard.styles";
+import {
+  Cards,
+  Container,
+  InnerContainer,
+  MainCard,
+  SideCard,
+} from "./Dashboard.styles";
 
-export const Dashboard: VFC = () => <Container />;
+export const Dashboard: VFC = () => (
+  <Container>
+    <InnerContainer>
+      <Cards>
+        <MainCard></MainCard>
+        <SideCard></SideCard>
+      </Cards>
+    </InnerContainer>
+  </Container>
+);
