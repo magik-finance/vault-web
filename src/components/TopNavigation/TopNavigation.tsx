@@ -33,7 +33,9 @@ export const TopNavigation: VFC = () => (
       <NavLinks>
         {links.map(({ to, label }) => (
           <NavLinkWrapper key={label}>
-            <NavLink to={to}>{label}</NavLink>
+            <NavLink to={to} exact={true}>
+              {label}
+            </NavLink>
           </NavLinkWrapper>
         ))}
       </NavLinks>

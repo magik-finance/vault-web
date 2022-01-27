@@ -29,7 +29,7 @@ import {
   StatsValue,
 } from "./Dashboard.styles";
 
-interface SideCardSection {
+interface SideCardSectionType {
   title: string;
   buttonLabel: string;
   buttonIcon: IconName;
@@ -37,7 +37,7 @@ interface SideCardSection {
   description: string;
 }
 
-const sideCardSections: SideCardSection[] = [
+const sideCardSections: SideCardSectionType[] = [
   {
     title: "Deposit collateral",
     buttonLabel: "Deposit collateral",
