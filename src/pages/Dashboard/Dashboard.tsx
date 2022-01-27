@@ -1,5 +1,8 @@
 import { VFC } from "react";
 
+import { IconName } from "../../components/Icon";
+import { BORROW, DEPOSIT, LIQUIDATE } from "../../constants/routes";
+
 import {
   Cards,
   Container,
@@ -13,11 +16,50 @@ import {
   SectionDescription,
   SectionTitle,
   SideCard,
+  SideCardButton,
+  SideCardButtonIconLeft,
+  SideCardButtonIconRight,
+  SideCardDescription,
+  SideCardSection,
+  SideCardSections,
+  SideCardTitle,
   Stats,
   StatsLabel,
   StatsRow,
   StatsValue,
 } from "./Dashboard.styles";
+
+interface SideCardSection {
+  title: string;
+  buttonLabel: string;
+  buttonIcon: IconName;
+  to: string;
+  description: string;
+}
+
+const sideCardSections: SideCardSection[] = [
+  {
+    title: "Deposit collateral",
+    buttonLabel: "Deposit collateral",
+    buttonIcon: "sell",
+    to: DEPOSIT,
+    description: "Collateral assets may affect the minimum collateral ratio",
+  },
+  {
+    title: "Borrow assets",
+    buttonLabel: "Borrow assets",
+    buttonIcon: "buy",
+    to: BORROW,
+    description: "Get a loan based on the deposited collateral",
+  },
+  {
+    title: "Liquidate all funds",
+    buttonLabel: "Liquidate all funds",
+    buttonIcon: "diamond-hands",
+    to: LIQUIDATE,
+    description: "Liquidating is immediate, your funds are back in your wallet",
+  },
+];
 
 export const Dashboard: VFC = () => (
   <Container>
@@ -59,7 +101,23 @@ export const Dashboard: VFC = () => (
             <DetailsValue>12.14%</DetailsValue>
           </DetailsRow>
         </MainCard>
-        <SideCard></SideCard>
+        <SideCard>
+          <SideCardSections>
+            {sideCardSections.map(
+              ({ title, buttonLabel, buttonIcon, to, description }) => (
+                <SideCardSection key={title}>
+                  <SideCardTitle>{title}</SideCardTitle>
+                  <SideCardButton to={to}>
+                    <SideCardButtonIconLeft type={buttonIcon} />
+                    {buttonLabel}
+                    <SideCardButtonIconRight />
+                  </SideCardButton>
+                  <SideCardDescription>{description}</SideCardDescription>
+                </SideCardSection>
+              )
+            )}
+          </SideCardSections>
+        </SideCard>
       </Cards>
     </InnerContainer>
   </Container>
