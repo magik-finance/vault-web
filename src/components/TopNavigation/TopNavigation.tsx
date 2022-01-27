@@ -17,10 +17,12 @@ const links = [
   {
     to: HOME,
     label: "Dashboard",
+    exact: true,
   },
   {
     to: VAULT,
     label: "Vault",
+    exact: false,
   },
 ];
 
@@ -31,9 +33,9 @@ export const TopNavigation: VFC = () => (
         <LogoIcon />
       </LogoWrapper>
       <NavLinks>
-        {links.map(({ to, label }) => (
+        {links.map(({ to, label, exact }) => (
           <NavLinkWrapper key={label}>
-            <NavLink to={to} exact={true}>
+            <NavLink to={to} exact={exact}>
               {label}
             </NavLink>
           </NavLinkWrapper>
