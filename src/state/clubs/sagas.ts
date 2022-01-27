@@ -1,6 +1,6 @@
-import {all, takeLatest} from 'redux-saga/effects';
-import { SagaIterator } from 'redux-saga'
-import * as actions from './actions';
+import { all, takeLatest } from "redux-saga/effects";
+import { SagaIterator } from "redux-saga";
+import * as actions from "./actions";
 
 export function* fetchClubs$(): SagaIterator {
   try {
@@ -12,8 +12,8 @@ export function* fetchClubs$(): SagaIterator {
   }
 }
 
-export default function* (): SagaIterator {
-  yield all([
-    takeLatest(actions.fetchClubs, fetchClubs$)
-  ])
-}
+const sagas = function* (): SagaIterator {
+  yield all([takeLatest(actions.fetchClubs, fetchClubs$)]);
+};
+
+export default sagas;

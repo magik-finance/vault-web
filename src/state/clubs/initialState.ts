@@ -1,9 +1,9 @@
-import { ClubsT } from './types';
+import { ClubsT } from "./types";
 
 const initialState: ClubsT = {
   data: [],
   errors: [],
-  fetching: false
+  fetching: false,
 };
 
 export default initialState;

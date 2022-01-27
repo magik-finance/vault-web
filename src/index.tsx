@@ -1,23 +1,23 @@
-import React from 'react';
-import { render } from 'react-dom'
-import { BrowserRouter } from 'react-router-dom';
-import { App } from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import { render } from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import { App } from "./App";
+import reportWebVitals from "./reportWebVitals";
 
 const renderApp = () => {
   render(
     <BrowserRouter>
       <App />
     </BrowserRouter>,
-    document.getElementById('root'),
-  )
+    document.getElementById("root")
+  );
+};
+
+if (process.env.NODE_ENV !== "production" && module.hot) {
+  module.hot.accept("./App", renderApp);
 }
 
-if (process.env.NODE_ENV !== 'production' && module.hot) {
-  module.hot.accept('./App', renderApp)
-}
-
-renderApp()
+renderApp();
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

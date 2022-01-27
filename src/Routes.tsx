@@ -1,16 +1,18 @@
-import React, {Fragment} from 'react';
-import {Route, Routes as Router} from 'react-router';
-import Example from './pages/example/Example';
-import { HOME } from './constants/routes';
+import React from "react";
+import { Route, BrowserRouter, Switch } from "react-router-dom";
+import Example from "./pages/example/Example";
+import { HOME } from "./constants/routes";
 
 const Routes: React.FC = () => {
   return (
-    <Fragment>
-      <Router>
-        <Route element={<Example />} path={HOME} />
-      </Router>
-  </Fragment>
+    <BrowserRouter>
+      <Switch>
+        <Route path={HOME}>
+          <Example />
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 };
 
-export default Routes
+export default Routes;
