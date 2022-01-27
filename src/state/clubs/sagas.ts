@@ -1,5 +1,6 @@
-import { all, takeLatest } from "redux-saga/effects";
 import { SagaIterator } from "redux-saga";
+import { all, takeLatest } from "redux-saga/effects";
+
 import * as actions from "./actions";
 
 export function* fetchClubs$(): SagaIterator {

@@ -1,8 +1,9 @@
-import { createStore, applyMiddleware, compose } from "redux";
-import createSagaMiddleware from "redux-saga";
-import reduxImmutableStateInvariant from "redux-immutable-state-invariant";
-import { createBrowserHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
+import { createBrowserHistory } from "history";
+import { createStore, applyMiddleware, compose } from "redux";
+import reduxImmutableStateInvariant from "redux-immutable-state-invariant";
+import createSagaMiddleware from "redux-saga";
+
 import createRootReducer from "./reducers";
 import sagas from "./sagas";
 
