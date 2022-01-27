@@ -48,6 +48,23 @@ const globalCss = css`
       outline: 2px solid ${({ theme }) => theme.colors.selectedFont};
     }
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    margin: 0;
+    padding: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 export const GlobalStyle = createGlobalStyle`
