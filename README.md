@@ -1,5 +1,9 @@
 # Magik Vault Web Application
 
+Develop branch is being automatically deployed to: https://condescending-mayer-703624.netlify.app
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Installation requirements

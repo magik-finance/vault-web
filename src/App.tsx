@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
 import Routes from "./Routes";
+import { Layout } from "./components/Layout";
 import configureStore from "./state";
 import { GlobalStyle } from "./styles/global-style";
 import { darkTheme } from "./styles/theme";
@@ -16,7 +17,9 @@ export const App: React.FC = () => {
       <BrowserRouter>
         <ThemeProvider theme={darkTheme}>
           <GlobalStyle />
-          <Routes />
+          <Layout>
+            <Routes />
+          </Layout>
         </ThemeProvider>
       </BrowserRouter>
     </Provider>
