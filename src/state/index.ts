@@ -16,13 +16,15 @@ function configureStoreProd(initialState = {}) {
 
   const middlewares = [reactRouterMiddleware, sagaMiddleware];
 
-  sagaMiddleware.run(sagas);
-
-  return createStore<any, any, any, any>(
+  const store = createStore(
     createRootReducer(history),
     initialState,
     compose(applyMiddleware(...middlewares))
   );
+
+  sagaMiddleware.run(sagas);
+
+  return store;
 }
 
 function configureStoreDev(initialState = {}) {
