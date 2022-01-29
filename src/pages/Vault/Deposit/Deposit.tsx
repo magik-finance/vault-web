@@ -11,6 +11,16 @@ import {
 } from "../Vault.styles";
 import { VaultMenu } from "../VaultMenu";
 
+import { StyledSelectVault } from "./Deposit.styles";
+
+const valutOptions = [
+  { label: "Lending", value: "lending" },
+  { label: "Options", value: "options" },
+  { label: "Dual LP", value: "dual-lp" },
+];
+
+const noop = () => {};
+
 export const Deposit: VFC = () => (
   <Container>
     <GoBack />
@@ -19,6 +29,7 @@ export const Deposit: VFC = () => (
       <Cards>
         <MainCard>
           <PageTitle tooltip="Deposit">Deposit</PageTitle>
+          <StyledSelectVault options={valutOptions} onClick={noop} />
         </MainCard>
         <SideCard></SideCard>
       </Cards>
