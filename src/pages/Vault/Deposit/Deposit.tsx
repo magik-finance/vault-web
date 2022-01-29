@@ -1,6 +1,7 @@
 import { VFC } from "react";
 
 import { Box } from "../../../components/Box";
+import { BalanceBox } from "../BalanceBox";
 import { CurrencySelectOption } from "../CurrencySelect";
 import { GoBack } from "../GoBack";
 import { PageTitle } from "../PageTitle";
@@ -13,6 +14,7 @@ import {
   MainCardDivider,
   Separator,
   SideCard,
+  SideCardTitle,
   StatsLabelBold,
   StatsLabelMedium,
   StatsLabelRegular,
@@ -125,7 +127,49 @@ export const Deposit: VFC = () => (
           </Box>
           <MainCardActionButton>Deposit your assets</MainCardActionButton>
         </MainCard>
-        <SideCard></SideCard>
+        <SideCard>
+          <SideCardTitle>Total deposited</SideCardTitle>
+          <Box height="40px" />
+          <BalanceBox
+            currencyIcon="usd-coin"
+            amount="45.000,00"
+            currency="USDC"
+            label="Current deposit"
+          />
+          <Box height="44px" />
+          <StatsTitle>Recent deposits</StatsTitle>
+          <Box height="24px" />
+          <Separator />
+          <Box
+            display="flex"
+            width="100%"
+            flexDirection="column"
+            padding="24px 0"
+            gap="24px"
+          >
+            <StatsRow>
+              <StatsLabelRegular>12.05.2021</StatsLabelRegular>
+              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
+            </StatsRow>
+            <StatsRow>
+              <StatsLabelRegular>07.05.2021</StatsLabelRegular>
+              <StatsLabelMedium>5 SOL</StatsLabelMedium>
+            </StatsRow>
+            <StatsRow>
+              <StatsLabelRegular>06.05.2021</StatsLabelRegular>
+              <StatsLabelMedium>45.000,00 USDC</StatsLabelMedium>
+            </StatsRow>
+            <StatsRow>
+              <StatsLabelRegular>02.05.2021</StatsLabelRegular>
+              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
+            </StatsRow>
+            <StatsRow>
+              <StatsLabelRegular>01.05.2021</StatsLabelRegular>
+              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
+            </StatsRow>
+          </Box>
+          <Separator />
+        </SideCard>
       </Cards>
     </InnerContainer>
   </Container>

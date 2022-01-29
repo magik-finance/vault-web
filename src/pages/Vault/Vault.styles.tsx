@@ -3,6 +3,11 @@ import styled from "styled-components";
 import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
 
+export const SideCardTitle = styled.h2`
+  font-size: 20px;
+  font-weight: 700;
+`;
+
 export const MainCardActionButton = styled(Button)`
   width: 100%;
   justify-content: center;
@@ -44,7 +49,6 @@ export const MainCardDivider = styled.div`
 
 export const SideCard = styled(Card)`
   width: 37%;
-  padding: 24px 32px;
 `;
 
 export const MainCard = styled(Card)`
