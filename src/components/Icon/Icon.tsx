@@ -7,6 +7,7 @@ import { ReactComponent as DiamondHandsIcon } from "./icons/diamond-hands.svg";
 import { ReactComponent as InfoIcon } from "./icons/info.svg";
 import { ReactComponent as MagikLogoIcon } from "./icons/magik-logo.svg";
 import { ReactComponent as SellIcon } from "./icons/sell.svg";
+import { ReactComponent as UsdCoinIcon } from "./icons/usd-coin.svg";
 import { ReactComponent as VaultIcon } from "./icons/vault.svg";
 import { ReactComponent as WalletIcon } from "./icons/wallet.svg";
 
@@ -18,6 +19,7 @@ const iconComponents = {
   info: InfoIcon,
   "magik-logo": MagikLogoIcon,
   sell: SellIcon,
+  "usd-coin": UsdCoinIcon,
   vault: VaultIcon,
   wallet: WalletIcon,
 };

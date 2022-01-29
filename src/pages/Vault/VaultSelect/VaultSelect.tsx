@@ -7,7 +7,7 @@ import {
   SelectFieldProps,
 } from "../../../components/SelectField";
 
-import { ChevronDownIcon, VaultIcon } from "./SelectVault.styles";
+import { ChevronDownIcon, VaultIcon } from "./VaultSelect.styles";
 
 interface Option {
   value: string;
@@ -18,17 +18,13 @@ interface Props
   options: Option[];
 }
 
-export const SelectVault: VFC<Props> = ({
+export const VaultSelect: VFC<Props> = ({
   className,
   options,
   onChange,
   value,
+  ...otherProps
 }) => {
-  const selectedOption = useMemo(
-    () => options.find((someOption) => someOption.value === value)!,
-    [options, value]
-  );
-
   const selectFieldOptions = useMemo(
     () => options.map((option) => option.value),
     [options]
@@ -36,15 +32,20 @@ export const SelectVault: VFC<Props> = ({
 
   const ButtonContent: SelectFieldButtonContentType = useMemo(
     () =>
-      ({ value }) =>
-        (
+      ({ value }) => {
+        const option = options.find(
+          (someOption) => someOption.value === value
+        )!;
+
+        return (
           <>
             <VaultIcon />
-            {selectedOption.label}
+            {option.label}
             <ChevronDownIcon />
           </>
-        ),
-    [selectedOption]
+        );
+      },
+    [options]
   );
 
   const ItemContent: SelectFieldItemContentType = useMemo(
@@ -67,6 +68,7 @@ export const SelectVault: VFC<Props> = ({
       ButtonContent={ButtonContent}
       ItemContent={ItemContent}
       value={value}
+      {...otherProps}
     />
   );
 };

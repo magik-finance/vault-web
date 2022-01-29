@@ -33,6 +33,8 @@ export interface SelectFieldProps {
   ItemContent: SelectFieldItemContentType;
   value: string;
   options: string[];
+  buttonWidth: string;
+  menuWidth: string;
   onChange: (value: string) => void;
 }
 
@@ -42,6 +44,8 @@ export const SelectField: VFC<SelectFieldProps> = ({
   ItemContent,
   value,
   options,
+  buttonWidth,
+  menuWidth,
   onChange,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -49,7 +53,7 @@ export const SelectField: VFC<SelectFieldProps> = ({
   const { getTooltipProps, setTooltipRef, setTriggerRef, triggerRef } =
     usePopperTooltip({
       trigger: "click",
-      placement: "bottom",
+      placement: "bottom-start",
       visible: isMenuOpen,
     });
 
@@ -72,6 +76,7 @@ export const SelectField: VFC<SelectFieldProps> = ({
         type="button"
         ref={setTriggerRef}
         onClick={handleSelectVaultButtonClick}
+        $width={buttonWidth}
       >
         <ButtonContent value={value} />
       </SelectFieldButton>
@@ -83,7 +88,7 @@ export const SelectField: VFC<SelectFieldProps> = ({
           mountOnEnter={true}
           unmountOnExit={true}
         >
-          <Menu ref={setTooltipRef} {...getTooltipProps()}>
+          <Menu ref={setTooltipRef} $width={menuWidth} {...getTooltipProps()}>
             {options.map((optionValue) => (
               <Item
                 key={value}

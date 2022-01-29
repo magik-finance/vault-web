@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
-import { SelectVault } from "../SelectVault";
+import { CurrencySelect } from "../CurrencySelect";
+import { VaultSelect } from "../VaultSelect";
+
+export const SelectCollateralField = styled(CurrencySelect).attrs({
+  buttonWidth: "100%",
+  menuWidth: "617px",
+})`
+  margin-top: 54px;
+`;
 
 export const SelectCollateralDescription = styled.p`
   font-weight: 500;
@@ -13,6 +21,9 @@ export const SelectCollateralTitle = styled.h3`
   margin-top: 40px;
 `;
 
-export const StyledSelectVault = styled(SelectVault)`
+export const StyledVaultSelect = styled(VaultSelect).attrs({
+  buttonWidth: "350px",
+  menuWidth: "350px",
+})`
   margin-top: 24px;
 `;

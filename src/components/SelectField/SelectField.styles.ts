@@ -3,6 +3,8 @@ import styled from "styled-components";
 export const MenuItem = styled.button`
   width: 100%;
   display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 18px 24px;
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-top: 0;
@@ -19,8 +21,8 @@ export const MenuItem = styled.button`
   }
 `;
 
-export const Menu = styled.div`
-  width: 350px;
+export const Menu = styled.div<{ $width: string }>`
+  width: ${({ $width }) => $width};
   display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.colors.pageBackground};
@@ -50,8 +52,8 @@ export const Menu = styled.div`
   }
 `;
 
-export const SelectFieldButton = styled.button`
-  width: 350px;
+export const SelectFieldButton = styled.button<{ $width: string }>`
+  width: ${({ $width }) => $width};
   height: 58px;
   outline: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 9999px;
