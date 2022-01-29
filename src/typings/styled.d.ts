@@ -22,6 +22,7 @@ declare module "styled-components" {
       string
     >;
     sizing: Record<
+      | "topNavigationHeightPx"
       | "pageSidePaddingPx"
       | "pageMaxWidthPx"
       | "pageContentMaxWidth"

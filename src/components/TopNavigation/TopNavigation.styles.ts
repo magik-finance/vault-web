@@ -57,9 +57,9 @@ export const LogoWrapper = styled(Link)`
 
 export const InnerContainer = styled.div`
   width: 100%;
-  max-width: calc(1740px + 96px + 96px);
-  padding: 0 96px;
-  height: calc(80px - 1px);
+  max-width: ${({ theme }) => theme.sizing.pageMaxWidthPx}px;
+  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px;
+  height: calc(${({ theme }) => theme.sizing.topNavigationHeightPx}px - 1px);
   display: flex;
   align-items: center;
 `;

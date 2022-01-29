@@ -1,4 +1,5 @@
 import { createGlobalStyle, css } from "styled-components";
+import "react-popper-tooltip/dist/styles.css";
 
 import { fontsCss } from "./fonts-css";
 import { normalizeCss } from "./normalize-css";

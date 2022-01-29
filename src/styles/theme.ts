@@ -20,6 +20,7 @@ export const darkTheme: DefaultTheme = {
     mgUsdcAccent: "#6231DF",
   },
   sizing: {
+    topNavigationHeightPx: 80,
     pageSidePaddingPx: 96,
     pageMaxWidthPx: 1740 + 96 + 96,
     pageContentMaxWidth: 1144 + 96 + 96,

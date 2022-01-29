@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import styled, { css } from "styled-components";
 
-const buttonCss = css`
+const commonCss = css`
   display: flex;
   align-items: center;
   line-height: 1;
@@ -10,6 +10,9 @@ const buttonCss = css`
   font-size: 16px;
   font-weight: 500;
   border-radius: 9999px;
+`;
+
+const buttonColorfulCss = css`
   background: linear-gradient(
       173deg,
       #4700ff -56%,
@@ -22,14 +25,34 @@ const buttonCss = css`
   transition: background 0.3s ease;
 
   &:hover {
+    color: ${({ theme }) => theme.colors.regularFont};
     background-position: 0 0%;
   }
 `;
 
-export const StyledLink = styled(Link)`
-  ${buttonCss};
+const buttonQuietCss = css`
+  outline: 1px solid ${({ theme }) => theme.colors.border};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.selectedFont};
+  }
 `;
 
 export const StyledButton = styled.button`
-  ${buttonCss};
+  ${commonCss};
+  ${buttonColorfulCss};
+`;
+
+export const StyledLink = styled(Link)`
+  ${commonCss};
+  ${buttonColorfulCss};
+`;
+
+export const StyledNavLink = styled(NavLink)`
+  ${commonCss};
+  ${buttonQuietCss};
+
+  &.active {
+    ${buttonColorfulCss};
+  }
 `;

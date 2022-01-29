@@ -1,6 +1,6 @@
 import { ComponentProps, FC } from "react";
 
-import { StyledButton, StyledLink } from "./Button.styles";
+import { StyledButton, StyledLink, StyledNavLink } from "./Button.styles";
 
 export const Button: FC<ComponentProps<typeof StyledButton>> = ({
   children,
@@ -11,3 +11,8 @@ export const ButtonLink: FC<ComponentProps<typeof StyledLink>> = ({
   children,
   ...otherProps
 }) => <StyledLink {...otherProps}>{children}</StyledLink>;
+
+export const ButtonNavLink: FC<ComponentProps<typeof StyledNavLink>> = ({
+  children,
+  ...otherProps
+}) => <StyledNavLink {...otherProps}>{children}</StyledNavLink>;
