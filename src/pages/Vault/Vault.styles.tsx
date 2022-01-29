@@ -1,6 +1,46 @@
 import styled from "styled-components";
 
+import { Button } from "../../components/Button";
 import { Card } from "../../components/Card";
+
+export const MainCardActionButton = styled(Button)`
+  width: 100%;
+  justify-content: center;
+`;
+
+export const Separator = styled.div`
+  width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+`;
+
+export const StatsLabelRegular = styled.div`
+  font-weight: 400;
+  color: ${({ theme }) => theme.colors.fadedOutFont};
+`;
+
+export const StatsLabelMedium = styled.div`
+  font-weight: 500;
+`;
+
+export const StatsLabelBold = styled.div`
+  font-weight: 700;
+`;
+
+export const StatsRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const StatsTitle = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+`;
+
+export const MainCardDivider = styled.div`
+  margin: 24px -44px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+`;
 
 export const SideCard = styled(Card)`
   width: 37%;
