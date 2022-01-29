@@ -11,9 +11,13 @@ import {
 } from "../Vault.styles";
 import { VaultMenu } from "../VaultMenu";
 
-import { StyledSelectVault } from "./Deposit.styles";
+import {
+  SelectCollateralDescription,
+  SelectCollateralTitle,
+  StyledSelectVault,
+} from "./Deposit.styles";
 
-const valutOptions = [
+const valueOptions = [
   { label: "Lending", value: "lending" },
   { label: "Options", value: "options" },
   { label: "Dual LP", value: "dual-lp" },
@@ -29,7 +33,17 @@ export const Deposit: VFC = () => (
       <Cards>
         <MainCard>
           <PageTitle tooltip="Deposit">Deposit</PageTitle>
-          <StyledSelectVault options={valutOptions} onClick={noop} />
+          <StyledSelectVault
+            options={valueOptions}
+            onChange={noop}
+            value={valueOptions[0].value}
+          />
+          <SelectCollateralTitle>
+            Choose a Collateral asset to deposit
+          </SelectCollateralTitle>
+          <SelectCollateralDescription>
+            Based on the amount of collateral you can get a loan
+          </SelectCollateralDescription>
         </MainCard>
         <SideCard></SideCard>
       </Cards>

@@ -14,6 +14,7 @@ export const InfoIcon = styled(Icon).attrs({ type: "info" })`
 export const InfoIconButton = styled.button`
   padding: 4px;
   margin: -4px;
+  border-radius: 8px;
 `;
 
 export const Container = styled.h1`

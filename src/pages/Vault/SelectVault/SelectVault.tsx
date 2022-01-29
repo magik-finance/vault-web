@@ -1,118 +1,72 @@
-import {
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useState,
-  VFC,
-} from "react";
-import { createPortal } from "react-dom";
-import { usePopperTooltip } from "react-popper-tooltip";
-import { CSSTransition } from "react-transition-group";
+import { useMemo, VFC } from "react";
 
 import {
-  ChevronDownIcon,
-  Menu,
-  MenuItem,
-  SelectVaultButton,
-  VaultIcon,
-} from "./SelectVault.styles";
+  SelectField,
+  SelectFieldButtonContentType,
+  SelectFieldItemContentType,
+  SelectFieldProps,
+} from "../../../components/SelectField";
 
-interface Props {
-  className?: string;
-}
+import { ChevronDownIcon, VaultIcon } from "./SelectVault.styles";
 
-const useClickOutside = (ref: HTMLElement | null, callback: () => void) => {
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (ref && !ref.contains(event.target as Node)) {
-        callback();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, callback]);
-};
-
-interface MenuItemProps {
-  label: string;
+interface Option {
   value: string;
-  onClick: (value: string) => void;
+  label: string;
+}
+interface Props
+  extends Omit<SelectFieldProps, "ItemContent" | "ButtonContent" | "options"> {
+  options: Option[];
 }
 
-const Item: VFC<MenuItemProps> = ({ label, value, onClick }) => {
-  const handleClick = useCallback(() => {
-    onClick(value);
-  }, [onClick, value]);
-
-  return (
-    <MenuItem type="button" onClick={handleClick}>
-      {label}
-    </MenuItem>
+export const SelectVault: VFC<Props> = ({
+  className,
+  options,
+  onChange,
+  value,
+}) => {
+  const selectedOption = useMemo(
+    () => options.find((someOption) => someOption.value === value)!,
+    [options, value]
   );
-};
 
-interface Props {
-  className?: string;
-  options: {
-    label: string;
-    value: string;
-  }[];
-  onClick: (value: string) => void;
-}
+  const selectFieldOptions = useMemo(
+    () => options.map((option) => option.value),
+    [options]
+  );
 
-export const SelectVault: VFC<Props> = ({ className, options, onClick }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const ButtonContent: SelectFieldButtonContentType = useMemo(
+    () =>
+      ({ value }) =>
+        (
+          <>
+            <VaultIcon />
+            {selectedOption.label}
+            <ChevronDownIcon />
+          </>
+        ),
+    [selectedOption]
+  );
 
-  const { getTooltipProps, setTooltipRef, setTriggerRef, triggerRef } =
-    usePopperTooltip({
-      trigger: "click",
-      placement: "bottom",
-      visible: isMenuOpen,
-    });
+  const ItemContent: SelectFieldItemContentType = useMemo(
+    () =>
+      ({ value }) => {
+        const option = options.find(
+          (someOption) => someOption.value === value
+        )!;
 
-  const onSelectVaultButtonClickOutside = useCallback(() => {
-    setIsMenuOpen(false);
-  }, []);
-
-  useClickOutside(triggerRef, onSelectVaultButtonClickOutside);
-
-  const handleSelectVaultButtonClick = useCallback<
-    MouseEventHandler<HTMLButtonElement>
-  >(() => {
-    setIsMenuOpen(true);
-  }, []);
+        return <>{option.label}</>;
+      },
+    [options]
+  );
 
   return (
-    <>
-      <SelectVaultButton
-        className={className}
-        type="button"
-        ref={setTriggerRef}
-        onClick={handleSelectVaultButtonClick}
-      >
-        <VaultIcon />
-        Select a vault
-        <ChevronDownIcon />
-      </SelectVaultButton>
-      {createPortal(
-        <CSSTransition
-          in={isMenuOpen}
-          timeout={200}
-          classNames="fade"
-          mountOnEnter={true}
-          unmountOnExit={true}
-        >
-          <Menu ref={setTooltipRef} {...getTooltipProps()}>
-            {options.map(({ label, value }) => (
-              <Item key={value} label={label} value={value} onClick={onClick} />
-            ))}
-          </Menu>
-        </CSSTransition>,
-        document.querySelector("#popper")!
-      )}
-    </>
+    <SelectField
+      className={className}
+      options={selectFieldOptions}
+      onChange={onChange}
+      ButtonContent={ButtonContent}
+      ItemContent={ItemContent}
+      value={value}
+    />
   );
 };
