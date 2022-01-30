@@ -2,6 +2,7 @@ import { VFC } from "react";
 
 import { Box } from "../../../components/Box";
 import { BalanceBox } from "../BalanceBox";
+import { CollateralRatioSlider } from "../CollateralRatioSlider";
 import { CurrencySelectOption } from "../CurrencySelect";
 import { GoBack } from "../GoBack";
 import { PageTitle } from "../PageTitle";
@@ -26,51 +27,38 @@ import {
 } from "../Vault.styles";
 import { VaultMenu } from "../VaultMenu";
 
-import { StyledVaultSelect } from "./Deposit.styles";
-
-const valueOptions = [
-  { label: "Lending", value: "lending" },
-  { label: "Options", value: "options" },
-  { label: "Dual LP", value: "dual-lp" },
-];
-
 const collateralOptions: CurrencySelectOption[] = [
   {
     iconName: "usd-coin",
     label: "USDC",
     value: "usdc",
     amount: "45.000,00",
-    amountLabel: "MAX",
   },
   {
     iconName: "usd-coin",
     label: "SOL",
     value: "sol",
     amount: "20.000,00",
-    amountLabel: "MAX",
   },
 ];
 
 const noop = () => {};
 
-export const Deposit: VFC = () => (
+export const Borrow: VFC = () => (
   <Container>
     <GoBack />
     <InnerContainer>
       <VaultMenu />
       <Cards>
         <MainCard>
-          <PageTitle tooltip="Deposit">Deposit</PageTitle>
-          <StyledVaultSelect
-            options={valueOptions}
-            onChange={noop}
-            value={valueOptions[0].value}
-          />
+          <PageTitle tooltip="Take out a loan based on your deposited colleteral">
+            Borrow
+          </PageTitle>
           <SelectCollateralTitle>
-            Choose a Collateral asset to deposit
+            Choose a Collateral asset
           </SelectCollateralTitle>
           <SelectCollateralDescription>
-            Based on the amount of collateral you can get a loan
+            Collateral assets may affect the minimum collateral ratio
           </SelectCollateralDescription>
           <SelectCollateralField
             options={collateralOptions}
@@ -78,6 +66,35 @@ export const Deposit: VFC = () => (
             onChange={noop}
           />
           <MainCardDivider />
+          <Box
+            width="100%"
+            display="flex"
+            justifyContent="space-between"
+            alignItems="flex-end"
+          >
+            <Box>
+              <Box fontSize="20px" fontWeight="500">
+                Set up a collateral ratio
+              </Box>
+              <Box fontWeight="500" color="fadedOutFont" paddingTop="12px">
+                Positions below the minimum will be liquidated
+              </Box>
+            </Box>
+            <Box
+              border="1px solid"
+              borderColor="border"
+              borderRadius="9999px"
+              padding="8px 24px"
+              display="flex"
+              gap="48px"
+              fontWeight="500"
+            >
+              <Box>50%</Box>
+              <Box color="fadedOutFont">MAX</Box>
+            </Box>
+          </Box>
+          <Box height="75px" />
+          <CollateralRatioSlider />
           <Box height="20px" />
           <StatsTitle>Deposit details</StatsTitle>
           <Box height="24px" />
