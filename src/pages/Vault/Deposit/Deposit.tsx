@@ -1,6 +1,11 @@
-import { useState, VFC } from "react";
+import { Program } from "@project-serum/anchor";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { VFC, useCallback, useState } from "react";
 
 import { Box } from "../../../components/Box";
+import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
+import { VaultIdl } from "../../../interfaces/vault";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -54,10 +59,18 @@ const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
 const noop = () => {};
 
 export const Deposit: VFC = () => {
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
   const [currency, setCurrency] = useState(
     currencySelectAndInputOptions[0].value
   );
   const [amount, setAmount] = useState(0);
+
+  const depositFunds = useCallback(async () => {
+    if (!publicKey) throw new WalletNotConnectedError();
+
+    const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
+  }, [publicKey, sendTransaction, connection]);
 
   return (
     <Container>
