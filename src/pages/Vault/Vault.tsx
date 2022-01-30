@@ -5,6 +5,7 @@ import { BORROW, DEPOSIT, LIQUIDATE } from "../../constants/routes";
 
 import { Borrow } from "./Borrow";
 import { Deposit } from "./Deposit";
+import { Liquidate } from "./Liquidate";
 
 export const Vault: VFC = () => (
   <Switch>
@@ -15,7 +16,7 @@ export const Vault: VFC = () => (
       <Borrow />
     </Route>
     <Route path={LIQUIDATE} exact={true}>
-      Liquidate
+      <Liquidate />
     </Route>
     <Route path="*">
       <Redirect to={DEPOSIT} />

@@ -64,7 +64,7 @@ export const SelectField: VFC<SelectFieldProps> = ({
   useOnClickOutside(triggerRef, onSelectVaultButtonClickOutside);
 
   const handleSelectVaultButtonClick = useCallback<
-    MouseEventHandler<HTMLButtonElement>
+    MouseEventHandler<HTMLDivElement>
   >(() => {
     setIsMenuOpen(true);
   }, []);
@@ -73,7 +73,6 @@ export const SelectField: VFC<SelectFieldProps> = ({
     <>
       <SelectFieldButton
         className={className}
-        type="button"
         ref={setTriggerRef}
         onClick={handleSelectVaultButtonClick}
         $width={buttonWidth}
@@ -89,14 +88,16 @@ export const SelectField: VFC<SelectFieldProps> = ({
           unmountOnExit={true}
         >
           <Menu ref={setTooltipRef} $width={menuWidth} {...getTooltipProps()}>
-            {options.map((optionValue) => (
-              <Item
-                key={value}
-                value={optionValue}
-                onClick={onChange}
-                ItemContent={ItemContent}
-              />
-            ))}
+            {options.map((optionValue) => {
+              return (
+                <Item
+                  key={optionValue}
+                  value={optionValue}
+                  onClick={onChange}
+                  ItemContent={ItemContent}
+                />
+              );
+            })}
           </Menu>
         </CSSTransition>,
         document.querySelector("#popper")!

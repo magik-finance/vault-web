@@ -35,16 +35,15 @@ const collateralOptions: CurrencySelectOption[] = [
     amount: "45.000,00",
   },
   {
-    iconName: "usd-coin",
+    iconName: "solana-coin",
     label: "SOL",
     value: "sol",
     amount: "20.000,00",
   },
 ];
 
-const noop = () => {};
-
 export const Borrow: VFC = () => {
+  const [currency, setCurrency] = useState(collateralOptions[0].value);
   const [collateralRatio, setCollateralRatio] = useState(50);
 
   const handleCollateralRatioChange = useCallback((value: number) => {
@@ -58,7 +57,7 @@ export const Borrow: VFC = () => {
         <VaultMenu />
         <Cards>
           <MainCard>
-            <PageTitle tooltip="Take out a loan based on your deposited colleteral">
+            <PageTitle tooltip="Take out a loan based on your deposited collateral">
               Borrow
             </PageTitle>
             <SelectCollateralTitle>
@@ -69,8 +68,8 @@ export const Borrow: VFC = () => {
             </SelectCollateralDescription>
             <SelectCollateralField
               options={collateralOptions}
-              value="usdc"
-              onChange={noop}
+              value={currency}
+              onChange={setCurrency}
             />
             <MainCardDivider />
             <Box
@@ -96,7 +95,7 @@ export const Borrow: VFC = () => {
                 gap="48px"
                 fontWeight="500"
               >
-                <Box>50%</Box>
+                <Box>{collateralRatio}%</Box>
                 <Box color="fadedOutFont">MAX</Box>
               </Box>
             </Box>
@@ -118,6 +117,7 @@ export const Borrow: VFC = () => {
               width="100%"
               display="flex"
               justifyContent="space-between"
+              alignItems="center"
               gap="12px"
               padding="16px 24px"
               border="1px solid"
@@ -128,9 +128,11 @@ export const Borrow: VFC = () => {
                 <Icon width="100%" height="100%" type="magik-coin" />
               </Box>
               mgUSDC
-              <Box marginLeft="auto">0.00</Box>
+              <Box marginLeft="auto" display="flex" alignItems="center">
+                0.00
+              </Box>
             </Box>
-            <MainCardActionButton>Deposit your assets</MainCardActionButton>
+            <MainCardActionButton>Confirm the loan</MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Collateral preview</SideCardTitle>
