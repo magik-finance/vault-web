@@ -9,7 +9,7 @@ export const WalletIcon = styled(Icon).attrs({ type: "wallet" })`
   transition: color 0.3s ease;
 `;
 
-export const WalletButton = styled.button`
+export const WalletButton = styled.div`
   box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.border};
   padding: 0 12px;
   height: 36px;
