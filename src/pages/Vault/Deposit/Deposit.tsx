@@ -70,6 +70,30 @@ export const Deposit: VFC = () => {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
+    // const treasureSeed = Buffer.from('treasure');
+
+    // const [treasure, trBump] = await PublicKey.findProgramAddress(
+    //   [treasureSeed, vault, user],
+    //   program.programId,
+    // );
+
+    const depositTransaction = await program.rpc.deposit(
+      // new anchor.BN(bump),
+      // new anchor.BN(amount),
+      {
+        accounts: {
+          treasure: "",
+          userToken: "",
+          vault: "",
+          vaultToken: "",
+          userSynth: "",
+          owner: "",
+          tokenProgram: "",
+          systemProgram: "",
+          rent: "",
+        },
+      }
+    );
   }, [publicKey, sendTransaction, connection]);
 
   return (
