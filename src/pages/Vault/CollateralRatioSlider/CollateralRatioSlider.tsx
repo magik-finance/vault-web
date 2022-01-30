@@ -1,10 +1,11 @@
-import { VFC } from "react";
+import { ComponentProps, VFC } from "react";
 
 import {
   MarkValue,
   MarkContainer,
   MarkLine,
   StyledSliderWithTooltip,
+  SliderWithTooltip,
 } from "./CollateralRatioSlider.styles";
 
 interface MarkProps {
@@ -40,13 +41,10 @@ const marks = markValues.reduce(
 
 const tipFormatter = (value: number) => `${value}%`;
 
-interface Props {
-  className?: string;
-}
-
-export const CollateralRatioSlider: VFC<Props> = ({ className }) => (
+export const CollateralRatioSlider: VFC<
+  ComponentProps<typeof SliderWithTooltip>
+> = (props) => (
   <StyledSliderWithTooltip
-    className={className}
     min={25}
     max={100}
     step={1}
@@ -64,5 +62,6 @@ export const CollateralRatioSlider: VFC<Props> = ({ className }) => (
     }}
     dotStyle={{ display: "none" }}
     style={{ marginBottom: 42 }}
+    {...props}
   />
 );

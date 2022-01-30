@@ -1,6 +1,7 @@
-import { VFC } from "react";
+import { useCallback, useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
+import { Icon } from "../../../components/Icon";
 import { BalanceBox } from "../BalanceBox";
 import { CollateralRatioSlider } from "../CollateralRatioSlider";
 import { CurrencySelectOption } from "../CurrencySelect";
@@ -19,7 +20,6 @@ import {
   Separator,
   SideCard,
   SideCardTitle,
-  StatsLabelBold,
   StatsLabelMedium,
   StatsLabelRegular,
   StatsRow,
@@ -44,148 +44,134 @@ const collateralOptions: CurrencySelectOption[] = [
 
 const noop = () => {};
 
-export const Borrow: VFC = () => (
-  <Container>
-    <GoBack />
-    <InnerContainer>
-      <VaultMenu />
-      <Cards>
-        <MainCard>
-          <PageTitle tooltip="Take out a loan based on your deposited colleteral">
-            Borrow
-          </PageTitle>
-          <SelectCollateralTitle>
-            Choose a Collateral asset
-          </SelectCollateralTitle>
-          <SelectCollateralDescription>
-            Collateral assets may affect the minimum collateral ratio
-          </SelectCollateralDescription>
-          <SelectCollateralField
-            options={collateralOptions}
-            value="usdc"
-            onChange={noop}
-          />
-          <MainCardDivider />
-          <Box
-            width="100%"
-            display="flex"
-            justifyContent="space-between"
-            alignItems="flex-end"
-          >
-            <Box>
-              <Box fontSize="20px" fontWeight="500">
-                Set up a collateral ratio
+export const Borrow: VFC = () => {
+  const [collateralRatio, setCollateralRatio] = useState(50);
+
+  const handleCollateralRatioChange = useCallback((value: number) => {
+    setCollateralRatio(value);
+  }, []);
+
+  return (
+    <Container>
+      <GoBack />
+      <InnerContainer>
+        <VaultMenu />
+        <Cards>
+          <MainCard>
+            <PageTitle tooltip="Take out a loan based on your deposited colleteral">
+              Borrow
+            </PageTitle>
+            <SelectCollateralTitle>
+              Choose a Collateral asset
+            </SelectCollateralTitle>
+            <SelectCollateralDescription>
+              Collateral assets may affect the minimum collateral ratio
+            </SelectCollateralDescription>
+            <SelectCollateralField
+              options={collateralOptions}
+              value="usdc"
+              onChange={noop}
+            />
+            <MainCardDivider />
+            <Box
+              width="100%"
+              display="flex"
+              justifyContent="space-between"
+              alignItems="flex-end"
+            >
+              <Box>
+                <Box fontSize="20px" fontWeight="500">
+                  Set up a collateral ratio
+                </Box>
+                <Box fontWeight="500" color="fadedOutFont" paddingTop="12px">
+                  Positions below the minimum will be liquidated
+                </Box>
               </Box>
-              <Box fontWeight="500" color="fadedOutFont" paddingTop="12px">
-                Positions below the minimum will be liquidated
+              <Box
+                border="1px solid"
+                borderColor="border"
+                borderRadius="9999px"
+                padding="8px 24px"
+                display="flex"
+                gap="48px"
+                fontWeight="500"
+              >
+                <Box>50%</Box>
+                <Box color="fadedOutFont">MAX</Box>
               </Box>
             </Box>
+            <Box height="75px" />
+            <CollateralRatioSlider
+              value={collateralRatio}
+              onChange={handleCollateralRatioChange}
+            />
+            <Box height="20px" />
+            <MainCardDivider />
+            <Box paddingTop="20px" fontSize="20px" fontWeight="500">
+              Confirm borrow asset and amount
+            </Box>
+            <Box paddingTop="12px" fontWeight="500" color="fadedOutFont">
+              Positions can be closed by repaying the borrowed amount
+            </Box>
             <Box
+              margin="54px 0 44px"
+              width="100%"
+              display="flex"
+              justifyContent="space-between"
+              gap="12px"
+              padding="16px 24px"
               border="1px solid"
               borderColor="border"
               borderRadius="9999px"
-              padding="8px 24px"
-              display="flex"
-              gap="48px"
-              fontWeight="500"
             >
-              <Box>50%</Box>
-              <Box color="fadedOutFont">MAX</Box>
+              <Box width="24px" height="24px">
+                <Icon width="100%" height="100%" type="magik-coin" />
+              </Box>
+              mgUSDC
+              <Box marginLeft="auto">0.00</Box>
             </Box>
-          </Box>
-          <Box height="75px" />
-          <CollateralRatioSlider />
-          <Box height="20px" />
-          <StatsTitle>Deposit details</StatsTitle>
-          <Box height="24px" />
-          <Separator />
-          <Box
-            padding="24px 0 20px"
-            display="flex"
-            flexDirection="column"
-            width="100%"
-            gap="24px"
-          >
-            <StatsRow>
-              <StatsLabelRegular>Reserve deposit limit</StatsLabelRegular>
-              <StatsLabelMedium>6,000,000 SOL</StatsLabelMedium>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>Borrow limit</StatsLabelRegular>
-              <StatsLabelMedium>$ 0.00</StatsLabelMedium>
-            </StatsRow>
+            <MainCardActionButton>Deposit your assets</MainCardActionButton>
+          </MainCard>
+          <SideCard>
+            <SideCardTitle>Collateral preview</SideCardTitle>
+            <Box height="40px" />
+            <BalanceBox
+              currencyIcon="usd-coin"
+              amount="45.000,00"
+              currency="USDC"
+              label="Balance: 318.67 USDC"
+            />
+            <Box height="44px" />
+            <StatsTitle>Conversion details</StatsTitle>
+            <Box height="24px" />
+            <Separator />
+            <Box
+              display="flex"
+              width="100%"
+              flexDirection="column"
+              padding="24px 0"
+              gap="24px"
+            >
+              <StatsRow>
+                <StatsLabelRegular>Exchange Price</StatsLabelRegular>
+                <StatsLabelMedium>45.000,00 USDC</StatsLabelMedium>
+              </StatsRow>
+              <StatsRow>
+                <StatsLabelRegular>Premium</StatsLabelRegular>
+                <StatsLabelMedium>-0.04%</StatsLabelMedium>
+              </StatsRow>
+            </Box>
+            <Separator />
+            <Box height="24px" />
             <StatsRow>
               <StatsLabelRegular>Liquidity</StatsLabelRegular>
-              <StatsLabelMedium>0 %</StatsLabelMedium>
+              <StatsLabelMedium>17.33M USDC</StatsLabelMedium>
             </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>Supply APY</StatsLabelRegular>
-              <StatsLabelMedium>1.92 %</StatsLabelMedium>
-            </StatsRow>
-          </Box>
-          <MainCardDivider />
-          <Box
-            width="100%"
-            display="flex"
-            flexDirection="column"
-            gap="20px"
-            padding="20px 0 32px"
-          >
-            <StatsRow>
-              <StatsLabelBold>USDC in wallet</StatsLabelBold>
-              <StatsLabelRegular>$ 24.005,00</StatsLabelRegular>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelBold>Tx fee</StatsLabelBold>
-              <StatsLabelRegular>0.15 USDC</StatsLabelRegular>
-            </StatsRow>
-          </Box>
-          <MainCardActionButton>Deposit your assets</MainCardActionButton>
-        </MainCard>
-        <SideCard>
-          <SideCardTitle>Total deposited</SideCardTitle>
-          <Box height="40px" />
-          <BalanceBox
-            currencyIcon="usd-coin"
-            amount="45.000,00"
-            currency="USDC"
-            label="Current deposit"
-          />
-          <Box height="44px" />
-          <StatsTitle>Recent deposits</StatsTitle>
-          <Box height="24px" />
-          <Separator />
-          <Box
-            display="flex"
-            width="100%"
-            flexDirection="column"
-            padding="24px 0"
-            gap="24px"
-          >
-            <StatsRow>
-              <StatsLabelRegular>12.05.2021</StatsLabelRegular>
-              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>07.05.2021</StatsLabelRegular>
-              <StatsLabelMedium>5 SOL</StatsLabelMedium>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>06.05.2021</StatsLabelRegular>
-              <StatsLabelMedium>45.000,00 USDC</StatsLabelMedium>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>02.05.2021</StatsLabelRegular>
-              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-            </StatsRow>
-            <StatsRow>
-              <StatsLabelRegular>01.05.2021</StatsLabelRegular>
-              <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-            </StatsRow>
-          </Box>
-          <Separator />
-        </SideCard>
-      </Cards>
-    </InnerContainer>
-  </Container>
-);
+            <Box height="24px" />
+            <Separator />
+          </SideCard>
+        </Cards>
+      </InnerContainer>
+    </Container>
+  );
+};

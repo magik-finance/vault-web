@@ -26,7 +26,7 @@ export const MarkContainer = styled.div<{
   }
 `;
 
-const SliderWithTooltip = createSliderWithTooltip(Slider);
+export const SliderWithTooltip = createSliderWithTooltip(Slider);
 
 export const StyledSliderWithTooltip = styled(SliderWithTooltip)`
   .rc-slider-tooltip-inner {

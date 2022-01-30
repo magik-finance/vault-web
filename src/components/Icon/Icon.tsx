@@ -5,6 +5,7 @@ import { ReactComponent as BuyIcon } from "./icons/buy.svg";
 import { ReactComponent as ChevronDownIcon } from "./icons/chevron-down.svg";
 import { ReactComponent as DiamondHandsIcon } from "./icons/diamond-hands.svg";
 import { ReactComponent as InfoIcon } from "./icons/info.svg";
+import { ReactComponent as MagikCoinIcon } from "./icons/magik-coin.svg";
 import { ReactComponent as MagikLogoIcon } from "./icons/magik-logo.svg";
 import { ReactComponent as SellIcon } from "./icons/sell.svg";
 import { ReactComponent as UsdCoinIcon } from "./icons/usd-coin.svg";
@@ -17,6 +18,7 @@ const iconComponents = {
   "chevron-down": ChevronDownIcon,
   "diamond-hands": DiamondHandsIcon,
   info: InfoIcon,
+  "magik-coin": MagikCoinIcon,
   "magik-logo": MagikLogoIcon,
   sell: SellIcon,
   "usd-coin": UsdCoinIcon,
