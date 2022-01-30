@@ -52,7 +52,9 @@ export const Menu = styled.div<{ $width: string }>`
   }
 `;
 
-export const SelectFieldButton = styled.button<{ $width: string }>`
+export const SelectFieldButton = styled.div.attrs({ role: "button" })<{
+  $width: string;
+}>`
   width: ${({ $width }) => $width};
   height: 58px;
   outline: 1px solid ${({ theme }) => theme.colors.border};
@@ -61,6 +63,10 @@ export const SelectFieldButton = styled.button<{ $width: string }>`
   align-items: center;
   gap: 12px;
   padding: 0 24px;
-  font-weight: 500;
   overflow: hidden;
+  cursor: pointer;
+
+  &:focus-within {
+    outline: 2px solid ${({ theme }) => theme.colors.selectedFont};
+  }
 `;

@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { DefaultTheme } from "styled-components";
 
 interface Props {
   width?: string;
@@ -18,6 +18,13 @@ interface Props {
   paddingRight?: string;
   paddingBottom?: string;
   paddingLeft?: string;
+  fontSize?: string;
+  fontWeight?: string;
+  lineHeight?: string;
+  color?: keyof DefaultTheme["colors"];
+  border?: string;
+  borderColor?: keyof DefaultTheme["colors"];
+  borderRadius?: string;
 }
 
 export const Box = styled.div<Props>`
@@ -38,4 +45,12 @@ export const Box = styled.div<Props>`
   padding-right: ${({ paddingRight }) => paddingRight};
   padding-bottom: ${({ paddingBottom }) => paddingBottom};
   padding-left: ${({ paddingLeft }) => paddingLeft};
+  font-size: ${({ fontSize }) => fontSize};
+  font-weight: ${({ fontWeight }) => fontWeight};
+  line-height: ${({ lineHeight }) => lineHeight};
+  color: ${({ theme, color }) => (color ? theme.colors[color] : null)};
+  border: ${({ border }) => border};
+  border-color: ${({ theme, borderColor }) =>
+    borderColor ? theme.colors[borderColor] : null};
+  border-radius: ${({ borderRadius }) => borderRadius};
 `;
