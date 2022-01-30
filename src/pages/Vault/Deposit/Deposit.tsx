@@ -2,6 +2,7 @@ import {WalletNotConnectedError} from '@solana/wallet-adapter-base';
 import {useConnection, useWallet} from '@solana/wallet-adapter-react';
 import { Program } from '@project-serum/anchor';
 import {VFC, useCallback} from "react";
+import * as anchor from '@project-serum/anchor';
 import { VaultIdl } from '../../../interfaces/vault';
 
 import {Box} from "../../../components/Box";
@@ -34,6 +35,7 @@ import {
   StyledVaultSelect,
 } from "./Deposit.styles";
 import {MAGIK_PROGRAM_ID} from '../../../constants/solana';
+import {PublicKey} from '@solana/web3.js';
 
 const valueOptions = [
   {label: "Lending", value: "lending"},
@@ -71,6 +73,30 @@ export const Deposit: VFC = () => {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
+    // const treasureSeed = Buffer.from('treasure');
+
+    // const [treasure, trBump] = await PublicKey.findProgramAddress(
+    //   [treasureSeed, vault, user],
+    //   program.programId,
+    // );
+
+    const depositTransaction = await program.rpc.deposit(
+      // new anchor.BN(bump),
+      // new anchor.BN(amount),
+      {
+        accounts: {
+          treasure: '',
+          userToken: '',
+          vault: '',
+          vaultToken: '',
+          userSynth: '',
+          owner: '',
+          tokenProgram: '',
+          systemProgram: '',
+          rent: '',
+        }
+      }
+    )
 
 
   }, [publicKey, sendTransaction, connection]);
