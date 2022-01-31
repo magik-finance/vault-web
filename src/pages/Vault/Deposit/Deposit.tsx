@@ -4,12 +4,18 @@ import { Program } from '@project-serum/anchor';
 import {VFC, useCallback} from "react";
 import * as anchor from '@project-serum/anchor';
 import { VaultIdl } from '../../../interfaces/vault';
-
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID} from '@solana/spl-token'
 import {Box} from "../../../components/Box";
 import {BalanceBox} from "../BalanceBox";
 import {CurrencySelectOption} from "../CurrencySelect";
 import {GoBack} from "../GoBack";
 import {PageTitle} from "../PageTitle";
+import {
+    SystemProgram,
+    SYSVAR_RENT_PUBKEY,
+  } from '@solana/web3.js';
+
+
 import {
   Cards,
   Container,
@@ -60,6 +66,15 @@ const collateralOptions: CurrencySelectOption[] = [
   },
 ];
 
+async function getATA(owner: PublicKey, mint: PublicKey) {
+    const [ata] = await PublicKey.findProgramAddress(
+      [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    )
+    return ata
+  }
+
+  
 const noop = () => {
 };
 
@@ -73,27 +88,42 @@ export const Deposit: VFC = () => {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
-    // const treasureSeed = Buffer.from('treasure');
+    const treasureSeed = Buffer.from('treasure');
 
-    // const [treasure, trBump] = await PublicKey.findProgramAddress(
-    //   [treasureSeed, vault, user],
-    //   program.programId,
-    // );
+    const vault = new PublicKey("5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog");
+    const wSOLMINT = new PublicKey("So11111111111111111111111111111111111111112");
 
+    const user = new PublicKey("USER_PUB_KEY_HERE");
+    const [treasure, trBump] = await PublicKey.findProgramAddress(
+      [treasureSeed, vault.toBuffer(), user.toBuffer()],
+      program.programId,
+    );
+
+    const [synth_mint, _] = await PublicKey.findProgramAddress(
+        [Buffer.from('synth_mint'), wSOLMINT.toBuffer(), vault.toBuffer()],
+        program.programId,
+      );
+
+    const vaultToken = await getATA(vault, wSOLMINT);
+    const userToken = await getATA(user, wSOLMINT);
+    const userSynth = await getATA(user, synth_mint);
+
+
+    const depositAmount = 1000;
     const depositTransaction = await program.rpc.deposit(
-      // new anchor.BN(bump),
-      // new anchor.BN(amount),
+      new anchor.BN(trBump),
+      new anchor.BN(depositAmount),
       {
         accounts: {
-          treasure: '',
-          userToken: '',
-          vault: '',
-          vaultToken: '',
-          userSynth: '',
-          owner: '',
-          tokenProgram: '',
-          systemProgram: '',
-          rent: '',
+          treasure: treasure,
+          userToken: userToken,
+          vault: vault,
+          vaultToken: vaultToken,
+          userSynth: userSynth,
+          owner: user,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram,
+          rent: SYSVAR_RENT_PUBKEY,
         }
       }
     )
