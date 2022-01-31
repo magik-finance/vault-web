@@ -92,12 +92,15 @@ export const Deposit: VFC = () => {
       program.programId
     );
 
-    const [synth_mint, _] = await PublicKey.findProgramAddress(
+    const [synth_mint] = await PublicKey.findProgramAddress(
       [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
       program.programId
     );
     const instructions: TransactionInstruction[] = []
-    const vaultToken = await getATA(vault, wSolMint);
+    const [vaultToken] = await PublicKey.findProgramAddress(
+        [Buffer.from("vault_token"), wSolMint.toBuffer(), vault.toBuffer()],
+        program.programId
+      );
     const userToken = await findOrCreateATA(connection, user, user, wSolMint, instructions);
     const userSynth = await findOrCreateATA(connection, user, user, synth_mint, instructions);
 
