@@ -9,7 +9,7 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
-import { VFC, useCallback, useState } from "react";
+import { VFC, useCallback, useState, useEffect } from "react";
 
 import { Box } from "../../../components/Box";
 import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
@@ -74,6 +74,57 @@ export const Deposit: VFC = () => {
   );
   const [amount, setAmount] = useState(0);
   const wallet = useWallet();
+
+  const test = useCallback(() => {
+    (async () => {
+      const provider = new Provider(connection, wallet as any, {
+        preflightCommitment: "processed",
+      });
+
+      const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
+      const user = wallet.publicKey!;
+
+      const vault = new PublicKey(
+        "5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog"
+      );
+      const wSolMint = new PublicKey(
+        "So11111111111111111111111111111111111111112"
+      );
+
+      const [userTreasure] = await PublicKey.findProgramAddress(
+        [Buffer.from("treasure"), vault.toBuffer(), user.toBuffer()],
+        program.programId
+      );
+
+      const treasures = await program.account.treasure.all();
+
+      for (const treasure of treasures) {
+        const { account, publicKey } = treasure;
+        if (publicKey.toBase58() === userTreasure.toBase58()) {
+          console.log("currentDeposit", account.currentDeposit.toString());
+          console.log("currentBorrow", account.currentBorrow.toString());
+        }
+      }
+
+      const vaults = await program.account.vault.all();
+
+      for (const someVault of vaults) {
+        console.log("mintToken", someVault.account.mintToken.toBase58());
+        console.log("payer", someVault.account.payer.toBase58());
+        console.log("percent", someVault.account.percent.toString());
+        console.log("synthToken", someVault.account.synthToken.toBase58());
+        console.log("totalDeposit", someVault.account.totalDeposit.toString());
+        console.log("vaultToken", someVault.account.vaultToken.toBase58());
+      }
+
+      const [synth_mint] = await PublicKey.findProgramAddress(
+        [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
+        program.programId
+      );
+
+      console.log("synth_mint", synth_mint.toBase58());
+    })();
+  }, [connection, wallet]);
 
   const depositFunds = useCallback(async () => {
     if (!wallet.publicKey) throw new WalletNotConnectedError();
@@ -167,6 +218,7 @@ export const Deposit: VFC = () => {
         <VaultMenu />
         <Cards>
           <MainCard>
+            <button onClick={test}>Test</button>
             <PageTitle tooltip="Deposit">Deposit</PageTitle>
             <StyledVaultSelect
               options={valueOptions}
