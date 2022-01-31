@@ -1,4 +1,4 @@
-import { Program, BN } from "@project-serum/anchor";
+import { Program, Provider, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -64,16 +64,20 @@ const noop = () => {};
 
 export const Deposit: VFC = () => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
   const [currency, setCurrency] = useState(
     currencySelectAndInputOptions[0].value
   );
   const [amount, setAmount] = useState(0);
+  const wallet = useWallet();
 
   const depositFunds = useCallback(async () => {
-    if (!publicKey) throw new WalletNotConnectedError();
+    if (!wallet.publicKey) throw new WalletNotConnectedError();
 
-    const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
+    const provider = new Provider(connection, wallet as any, {
+      preflightCommitment: "processed",
+    });
+
+    const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
 
     const treasureSeed = Buffer.from("treasure");
     const vault = new PublicKey("5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog");
@@ -81,7 +85,7 @@ export const Deposit: VFC = () => {
       "So11111111111111111111111111111111111111112"
     );
 
-    const user = publicKey;
+    const user = wallet.publicKey;
 
     const [treasure, trBump] = await PublicKey.findProgramAddress(
       [treasureSeed, vault.toBuffer(), user.toBuffer()],
@@ -110,7 +114,7 @@ export const Deposit: VFC = () => {
           userSynth: userSynth,
           owner: user,
           tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram,
+          systemProgram: SystemProgram.programId,
           rent: SYSVAR_RENT_PUBKEY,
         },
       }
@@ -119,7 +123,7 @@ export const Deposit: VFC = () => {
     console.log(depositTransaction);
 
     return depositTransaction;
-  }, [publicKey, sendTransaction, connection]);
+  }, [wallet, connection]);
 
   return (
     <Container>
