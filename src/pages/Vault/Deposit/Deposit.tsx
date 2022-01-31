@@ -1,16 +1,15 @@
 import { Program, BN } from "@project-serum/anchor";
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { PublicKey, SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+import { SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { VFC, useCallback, useState } from "react";
 
 import { Box } from "../../../components/Box";
 import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
 import { VaultIdl } from "../../../interfaces/vault";
+import { getATA } from "../../../solana";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -61,14 +60,6 @@ const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
   },
 ];
 
-async function getATA(owner: PublicKey, mint: PublicKey) {
-  const [ata] = await PublicKey.findProgramAddress(
-    [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-    ASSOCIATED_TOKEN_PROGRAM_ID
-  );
-  return ata;
-}
-
 const noop = () => {};
 
 export const Deposit: VFC = () => {
@@ -83,26 +74,27 @@ export const Deposit: VFC = () => {
     if (!publicKey) throw new WalletNotConnectedError();
 
     const program = new Program(VaultIdl, MAGIK_PROGRAM_ID);
-    const treasureSeed = Buffer.from("treasure");
 
+    const treasureSeed = Buffer.from("treasure");
     const vault = new PublicKey("5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog");
-    const wSOLMINT = new PublicKey(
+    const wSolMint = new PublicKey(
       "So11111111111111111111111111111111111111112"
     );
 
-    const user = new PublicKey("USER_PUB_KEY_HERE");
+    const user = publicKey;
+
     const [treasure, trBump] = await PublicKey.findProgramAddress(
       [treasureSeed, vault.toBuffer(), user.toBuffer()],
       program.programId
     );
 
     const [synth_mint, _] = await PublicKey.findProgramAddress(
-      [Buffer.from("synth_mint"), wSOLMINT.toBuffer(), vault.toBuffer()],
+      [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
       program.programId
     );
 
-    const vaultToken = await getATA(vault, wSOLMINT);
-    const userToken = await getATA(user, wSOLMINT);
+    const vaultToken = await getATA(vault, wSolMint);
+    const userToken = await getATA(user, wSolMint);
     const userSynth = await getATA(user, synth_mint);
 
     const depositAmount = 1000;
@@ -123,6 +115,10 @@ export const Deposit: VFC = () => {
         },
       }
     );
+
+    console.log(depositTransaction);
+
+    return depositTransaction;
   }, [publicKey, sendTransaction, connection]);
 
   return (
@@ -202,7 +198,9 @@ export const Deposit: VFC = () => {
                 <StatsLabelRegular>$ 24.005,00</StatsLabelRegular>
               </StatsRow>
             </Box>
-            <MainCardActionButton>Deposit your assets</MainCardActionButton>
+            <MainCardActionButton onClick={depositFunds}>
+              Deposit your assets
+            </MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Total deposited</SideCardTitle>
