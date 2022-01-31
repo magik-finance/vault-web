@@ -2,14 +2,14 @@ import { Program, Provider, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { SystemProgram, SYSVAR_RENT_PUBKEY } from "@solana/web3.js";
+import { Transaction, SystemProgram, SYSVAR_RENT_PUBKEY, TransactionInstruction } from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import { VFC, useCallback, useState } from "react";
 
 import { Box } from "../../../components/Box";
 import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
 import { VaultIdl } from "../../../interfaces/vault";
-import { getATA } from "../../../solana";
+import { findOrCreateATA, getATA } from "../../../solana";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -96,10 +96,16 @@ export const Deposit: VFC = () => {
       [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
       program.programId
     );
-
+    const instructions: TransactionInstruction[] = []
     const vaultToken = await getATA(vault, wSolMint);
-    const userToken = await getATA(user, wSolMint);
-    const userSynth = await getATA(user, synth_mint);
+    const userToken = await findOrCreateATA(connection, user, user, wSolMint, instructions);
+    const userSynth = await findOrCreateATA(connection, user, user, synth_mint, instructions);
+
+    if (instructions.length > 0) {
+        let transaction = new Transaction({ feePayer: wallet.publicKey })
+        const tx = await wallet.sendTransaction(transaction, connection);
+        console.log("CREAT ATA: ", tx);
+    }
 
     const depositAmount = 1000;
     const depositTransaction = await program.rpc.deposit(
