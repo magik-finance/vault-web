@@ -14,7 +14,7 @@ import { VFC, useCallback, useState } from "react";
 import { Box } from "../../../components/Box";
 import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
 import { VaultIdl } from "../../../interfaces/vault";
-import { findOrCreateATA, getATA } from "../../../solana";
+import { findOrCreateATA } from "../../../solana";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
