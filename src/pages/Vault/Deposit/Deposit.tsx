@@ -97,12 +97,20 @@ export const Deposit: VFC = () => {
       program.programId
     );
     const instructions: TransactionInstruction[] = []
-    const vaultToken = await getATA(vault, wSolMint);
+    const vaultToken = await findOrCreateATA(connection, user, vault, wSolMint, instructions);
     const userToken = await findOrCreateATA(connection, user, user, wSolMint, instructions);
     const userSynth = await findOrCreateATA(connection, user, user, synth_mint, instructions);
 
+    console.log("IX ", instructions);
+    console.log("vaultToken ", vaultToken.toBase58());
+    console.log("use ", user.toBase58());
+    console.log("userToken ", userToken.toBase58());
+    console.log("userSynth ", userSynth.toBase58());
+    console.log("synth_mint ", synth_mint.toBase58());
+    console.log("treasure ", treasure.toBase58());
+    
     if (instructions.length > 0) {
-        let transaction = new Transaction({ feePayer: wallet.publicKey })
+        let transaction = new Transaction({ feePayer: user })
         const tx = await wallet.sendTransaction(transaction, connection);
         console.log("CREAT ATA: ", tx);
     }
