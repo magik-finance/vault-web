@@ -111,6 +111,7 @@ export const Deposit: VFC = () => {
     
     if (instructions.length > 0) {
         let transaction = new Transaction({ feePayer: user })
+        transaction.instructions = [...instructions]
         const tx = await wallet.sendTransaction(transaction, connection);
         console.log("CREAT ATA: ", tx);
     }
