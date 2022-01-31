@@ -97,7 +97,7 @@ export const Deposit: VFC = () => {
       program.programId
     );
     const instructions: TransactionInstruction[] = []
-    const vaultToken = await findOrCreateATA(connection, user, vault, wSolMint, instructions);
+    const vaultToken = await getATA(vault, wSolMint);
     const userToken = await findOrCreateATA(connection, user, user, wSolMint, instructions);
     const userSynth = await findOrCreateATA(connection, user, user, synth_mint, instructions);
 
