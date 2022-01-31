@@ -2,7 +2,12 @@ import { Program, Provider, BN } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { Transaction, SystemProgram, SYSVAR_RENT_PUBKEY, TransactionInstruction } from "@solana/web3.js";
+import {
+  Transaction,
+  SystemProgram,
+  SYSVAR_RENT_PUBKEY,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import { PublicKey } from "@solana/web3.js";
 import { VFC, useCallback, useState } from "react";
 
@@ -96,13 +101,25 @@ export const Deposit: VFC = () => {
       [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
       program.programId
     );
-    const instructions: TransactionInstruction[] = []
+    const instructions: TransactionInstruction[] = [];
     const [vaultToken] = await PublicKey.findProgramAddress(
-        [Buffer.from("vault_token"), wSolMint.toBuffer(), vault.toBuffer()],
-        program.programId
-      );
-    const userToken = await findOrCreateATA(connection, user, user, wSolMint, instructions);
-    const userSynth = await findOrCreateATA(connection, user, user, synth_mint, instructions);
+      [Buffer.from("vault_token"), wSolMint.toBuffer(), vault.toBuffer()],
+      program.programId
+    );
+    const userToken = await findOrCreateATA(
+      connection,
+      user,
+      user,
+      wSolMint,
+      instructions
+    );
+    const userSynth = await findOrCreateATA(
+      connection,
+      user,
+      user,
+      synth_mint,
+      instructions
+    );
 
     console.log("IX ", instructions);
     console.log("vaultToken ", vaultToken.toBase58());
@@ -111,12 +128,12 @@ export const Deposit: VFC = () => {
     console.log("userSynth ", userSynth.toBase58());
     console.log("synth_mint ", synth_mint.toBase58());
     console.log("treasure ", treasure.toBase58());
-    
+
     if (instructions.length > 0) {
-        let transaction = new Transaction({ feePayer: user })
-        transaction.instructions = [...instructions]
-        const tx = await wallet.sendTransaction(transaction, connection);
-        console.log("CREAT ATA: ", tx);
+      let transaction = new Transaction({ feePayer: user });
+      transaction.instructions = [...instructions];
+      const tx = await wallet.sendTransaction(transaction, connection);
+      console.log("CREAT ATA: ", tx);
     }
 
     const depositAmount = 1000;
