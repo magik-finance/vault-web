@@ -17,7 +17,7 @@ import {
   W_SOL_VAULT,
 } from "../../../constants/solana";
 import { VaultIdl } from "../../../interfaces/vault";
-import { findOrCreateATA } from "../../../solana";
+import { findOrCreateATA } from "../../../state/magik";
 import { BalanceBox } from "../BalanceBox";
 import { CollateralRatioSlider } from "../CollateralRatioSlider";
 import { CurrencySelectOption } from "../CurrencySelect";
@@ -74,7 +74,6 @@ export const Borrow: VFC = () => {
 
     const user = wallet.publicKey;
     const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
-    const instructions: TransactionInstruction[] = [];
 
     const treasureSeed = Buffer.from("treasure");
     const vault = new PublicKey(W_SOL_VAULT);
@@ -96,11 +95,12 @@ export const Borrow: VFC = () => {
     );
 
     const userSynth = await findOrCreateATA(
-      connection,
-      user,
-      user,
-      synth_mint,
-      instructions
+      {
+        connection,
+        payer: wallet.publicKey,
+        owner: wallet.publicKey,
+        mint: W_SOL_MINT_TOKEN,
+      }
     );
 
     const loanAmount = 1000; //Hardcode
