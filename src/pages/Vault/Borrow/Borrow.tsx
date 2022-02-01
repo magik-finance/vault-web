@@ -1,7 +1,23 @@
+import { BN, Program, Provider } from "@project-serum/anchor";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import { useCallback, useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
 import { Icon } from "../../../components/Icon";
+import {
+  MAGIK_PROGRAM_ID,
+  W_SOL_MINT_TOKEN,
+  W_SOL_VAULT,
+} from "../../../constants/solana";
+import { VaultIdl } from "../../../interfaces/vault";
+import { findOrCreateATA } from "../../../solana";
 import { BalanceBox } from "../BalanceBox";
 import { CollateralRatioSlider } from "../CollateralRatioSlider";
 import { CurrencySelectOption } from "../CurrencySelect";
@@ -44,7 +60,71 @@ const collateralOptions: CurrencySelectOption[] = [
 
 export const Borrow: VFC = () => {
   const [currency, setCurrency] = useState(collateralOptions[0].value);
+
+  const { connection } = useConnection();
+  const wallet = useWallet();
   const [collateralRatio, setCollateralRatio] = useState(50);
+
+  const requestLoan = useCallback(async () => {
+    if (!wallet.publicKey) throw new WalletNotConnectedError();
+
+    const provider = new Provider(connection, wallet as any, {
+      preflightCommitment: "processed",
+    });
+
+    const user = wallet.publicKey;
+    const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
+    const instructions: TransactionInstruction[] = [];
+
+    const treasureSeed = Buffer.from("treasure");
+    const vault = new PublicKey(W_SOL_VAULT);
+    const wSolMint = new PublicKey(W_SOL_MINT_TOKEN);
+
+    const [treasure, trBump] = await PublicKey.findProgramAddress(
+      [treasureSeed, vault.toBuffer(), user.toBuffer()],
+      program.programId
+    );
+
+    const [synth_mint] = await PublicKey.findProgramAddress(
+      [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
+      program.programId
+    );
+
+    const [vaultToken] = await PublicKey.findProgramAddress(
+      [Buffer.from("vault_token"), wSolMint.toBuffer(), vault.toBuffer()],
+      program.programId
+    );
+
+    const userSynth = await findOrCreateATA(
+      connection,
+      user,
+      user,
+      synth_mint,
+      instructions
+    );
+
+    const loanAmount = 1000; //Hardcode
+    const loanTransaction = await program.rpc.borrow(
+      new BN(trBump),
+      new BN(loanAmount),
+      {
+        accounts: {
+          treasure: treasure,
+          vault: vault,
+          vaultToken: vaultToken,
+          synthMint: synth_mint,
+          userSynth: userSynth,
+          owner: user,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        },
+      }
+    );
+
+    console.log(loanTransaction);
+
+    return loanTransaction;
+  }, [wallet, connection]);
 
   const handleCollateralRatioChange = useCallback((value: number) => {
     setCollateralRatio(value);
@@ -132,7 +212,7 @@ export const Borrow: VFC = () => {
                 0.00
               </Box>
             </Box>
-            <MainCardActionButton>Confirm the loan</MainCardActionButton>
+            <MainCardActionButton onClick={requestLoan}>Confirm the loan</MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Collateral preview</SideCardTitle>
