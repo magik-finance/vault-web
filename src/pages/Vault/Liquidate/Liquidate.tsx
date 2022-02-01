@@ -1,6 +1,7 @@
 import { useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
+import { useMagikData } from "../../../state/magik";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -33,7 +34,7 @@ const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
     max: 23000,
   },
   {
-    value: "sol",
+    value: "wsol",
     label: "SOL",
     iconName: "solana-coin",
     max: 11000,
@@ -41,10 +42,10 @@ const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
 ];
 
 export const Liquidate: VFC = () => {
-  const [currency, setCurrency] = useState(
-    currencySelectAndInputOptions[0].value
-  );
+  const [coin, setCoin] = useState(currencySelectAndInputOptions[0].value);
   const [amount, setAmount] = useState(0);
+
+  const { liquidate } = useMagikData();
 
   return (
     <Container>
@@ -84,16 +85,16 @@ export const Liquidate: VFC = () => {
               Where you want to repay your loan with
             </Box>
             <CurrencySelectAndInput
-              optionValue={currency}
+              optionValue={coin}
               amountValue={amount}
-              onOptionChange={setCurrency}
+              onOptionChange={setCoin}
               onAmountChange={setAmount}
               buttonWidth="100%"
               menuWidth="400px"
               options={currencySelectAndInputOptions}
             />
             <Box height="44px" />
-            <MainCardActionButton>
+            <MainCardActionButton onClick={() => liquidate({ coin })}>
               Liquidate all your positions
             </MainCardActionButton>
           </MainCard>

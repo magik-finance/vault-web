@@ -37,16 +37,16 @@ const collateralOptions: CurrencySelectOption[] = [
   },
   {
     iconName: "solana-coin",
-    label: "SOL",
-    value: "sol",
+    label: "wSOL",
+    value: "wsol",
     amount: "20.000,00",
   },
 ];
 
 export const Borrow: VFC = () => {
-  const [currency, setCurrency] = useState(collateralOptions[0].value);
+  const [coin, setCoin] = useState(collateralOptions[0].value);
   const [collateralRatio, setCollateralRatio] = useState(50);
-  const { borrowWSol } = useMagikData();
+  const { borrow } = useMagikData();
 
   const handleCollateralRatioChange = useCallback((value: number) => {
     setCollateralRatio(value);
@@ -70,8 +70,8 @@ export const Borrow: VFC = () => {
             </SelectCollateralDescription>
             <SelectCollateralField
               options={collateralOptions}
-              value={currency}
-              onChange={setCurrency}
+              value={coin}
+              onChange={setCoin}
             />
             <MainCardDivider />
             <Box
@@ -134,7 +134,7 @@ export const Borrow: VFC = () => {
                 0.00
               </Box>
             </Box>
-            <MainCardActionButton onClick={() => borrowWSol({ amount: 1 })}>
+            <MainCardActionButton onClick={() => borrow({ coin, amount: 1 })}>
               Confirm the loan
             </MainCardActionButton>
           </MainCard>

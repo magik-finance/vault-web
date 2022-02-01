@@ -1,6 +1,7 @@
 import { VFC, useCallback, useState, useMemo } from "react";
 
 import { Box } from "../../../components/Box";
+import { Coin } from "../../../constants/solana";
 import { useMagikData } from "../../../state/magik";
 import { formatNumber } from "../../../utils/formatNumber";
 import { BalanceBox } from "../BalanceBox";
@@ -40,9 +41,9 @@ const vaultOptions = [
 
 export const Deposit: VFC = () => {
   const [vault, setVault] = useState(vaultOptions[0].value);
-  const [currency, setCurrency] = useState("usdc");
+  const [coin, setCoin] = useState<Coin>("usdc");
   const [amount, setAmount] = useState(0);
-  const { magikData, depositWSol } = useMagikData();
+  const { magikData, deposit } = useMagikData();
 
   const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = useMemo(
     () => [
@@ -50,16 +51,16 @@ export const Deposit: VFC = () => {
         value: "usdc",
         label: "USDC",
         iconName: "usd-coin",
-        max: magikData.usdcBalance?.toNumber(),
+        max: magikData.usdc.balance?.toNumber(),
       },
       {
-        value: "sol",
+        value: "wsol",
         label: "wSOL",
         iconName: "solana-coin",
-        max: magikData.wSolBalance?.toNumber(),
+        max: magikData.wsol.balance?.toNumber(),
       },
     ],
-    [magikData.usdcBalance, magikData.wSolBalance]
+    [magikData.usdc.balance, magikData.wsol.balance]
   );
 
   const vaultOption = useMemo(
@@ -68,8 +69,8 @@ export const Deposit: VFC = () => {
   );
 
   const handleFormSubmit = useCallback(() => {
-    depositWSol({ amount });
-  }, [depositWSol, amount]);
+    deposit({ coin, amount });
+  }, [deposit, amount, coin]);
 
   return (
     <Container>
@@ -92,9 +93,9 @@ export const Deposit: VFC = () => {
             </SelectCollateralDescription>
             <Box height="44px" />
             <CurrencySelectAndInput
-              optionValue={currency}
+              optionValue={coin}
               amountValue={amount}
-              onOptionChange={setCurrency}
+              onOptionChange={setCoin}
               onAmountChange={setAmount}
               buttonWidth="100%"
               menuWidth="400px"

@@ -8,11 +8,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, TransactionInstruction } from "@solana/web3.js";
 import { useMemo } from "react";
 
-import {
-  MAGIK_PROGRAM_ID,
-  W_SOL_MINT_TOKEN,
-  W_SOL_VAULT,
-} from "../constants/solana";
+import { Coin, coinConfigs, MAGIK_PROGRAM_ID } from "../constants/solana";
 import { VaultIdl } from "../interfaces/vault";
 
 interface FindOrCreateATAProps {
@@ -44,31 +40,39 @@ export const useProgram = () => {
   return program;
 };
 
-export async function getWSolTreasureAddress(walletAddress: PublicKey) {
-  const [wSolTreasureAddress] = await PublicKey.findProgramAddress(
-    [Buffer.from("treasure"), W_SOL_VAULT.toBuffer(), walletAddress.toBuffer()],
+export async function getTreasureAddress(coin: Coin, walletAddress: PublicKey) {
+  const [treasureAddress] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("treasure"),
+      coinConfigs[coin].vault.toBuffer(),
+      walletAddress.toBuffer(),
+    ],
     MAGIK_PROGRAM_ID
   );
 
-  return wSolTreasureAddress ? wSolTreasureAddress : undefined;
+  return treasureAddress ? treasureAddress : undefined;
 }
 
-export async function getWSolTreasureBump(walletAddress: PublicKey) {
+export async function getTreasureBump(coin: Coin, walletAddress: PublicKey) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, wSolTreasureBump] = await PublicKey.findProgramAddress(
-    [Buffer.from("treasure"), W_SOL_VAULT.toBuffer(), walletAddress.toBuffer()],
+  const [_, treasureBump] = await PublicKey.findProgramAddress(
+    [
+      Buffer.from("treasure"),
+      coinConfigs[coin].vault.toBuffer(),
+      walletAddress.toBuffer(),
+    ],
     MAGIK_PROGRAM_ID
   );
 
-  return wSolTreasureBump ? wSolTreasureBump : undefined;
+  return treasureBump ? treasureBump : undefined;
 }
 
-export async function getWSolSynthMintAddress() {
+export async function getSynthMintAddress(coin: Coin) {
   const [wSolMintAddress] = await PublicKey.findProgramAddress(
     [
       Buffer.from("synth_mint"),
-      W_SOL_MINT_TOKEN.toBuffer(),
-      W_SOL_VAULT.toBuffer(),
+      coinConfigs[coin].mintToken.toBuffer(),
+      coinConfigs[coin].vault.toBuffer(),
     ],
     MAGIK_PROGRAM_ID
   );
@@ -76,12 +80,12 @@ export async function getWSolSynthMintAddress() {
   return wSolMintAddress ? wSolMintAddress : undefined;
 }
 
-export async function getWSolVaultTokenAddress() {
+export async function getVaultTokenAddress(coin: Coin) {
   const [wSolVaultTokenAddress] = await PublicKey.findProgramAddress(
     [
       Buffer.from("vault_token"),
-      W_SOL_MINT_TOKEN.toBuffer(),
-      W_SOL_VAULT.toBuffer(),
+      coinConfigs[coin].mintToken.toBuffer(),
+      coinConfigs[coin].vault.toBuffer(),
     ],
     MAGIK_PROGRAM_ID
   );
@@ -133,20 +137,20 @@ export async function getSolBalance({
 }
 
 interface GetSplTokenBalanceProps {
+  coin: Coin;
   connection: Connection;
   walletAddress: PublicKey;
-  mintTokenAddress: PublicKey;
 }
 
-export async function getSplTokenBalance({
+export async function getCoinBalance({
+  coin,
   connection,
   walletAddress,
-  mintTokenAddress,
 }: GetSplTokenBalanceProps) {
   const tokenAccounts = await connection.getTokenAccountsByOwner(
     walletAddress,
     {
-      mint: mintTokenAddress,
+      mint: coinConfigs[coin].mintToken,
     }
   );
 
@@ -160,4 +164,3 @@ export async function getSplTokenBalance({
 
   return new BN(balance.value.amount);
 }
-

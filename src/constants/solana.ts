@@ -4,7 +4,7 @@ export const MAGIK_PROGRAM_ID = new PublicKey(
   "CmHZHMPRfsNpYZe1YUJA59EaCfZiQqJAyBrx9oA3QtCg"
 );
 export const USDC_VAULT = new PublicKey(
-  "9VMuPPfXszSQJtDMNxT2Ud28UHHACFyPPvY13NNajFpy"
+  "GvTug7AAsEMTgeAoGQKuNZqXexpBnEbiuMmvRGFMLfDr"
 );
 export const W_SOL_VAULT = new PublicKey(
   "5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog"
@@ -18,3 +18,17 @@ export const W_SOL_MINT_TOKEN = new PublicKey(
 export const LENDING_MARKET = new PublicKey(
   "H27Quk3DSbu55T4dCr1NddTTSAezXwHU67FPCZVKLhSW"
 );
+
+export type Coin = "usdc" | "wsol";
+
+export const coins: Coin[] = ["usdc", "wsol"];
+
+export interface CoinConfig {
+  vault: PublicKey;
+  mintToken: PublicKey;
+}
+
+export const coinConfigs: Record<Coin, CoinConfig> = {
+  usdc: { vault: USDC_VAULT, mintToken: USDC_MINT_TOKEN },
+  wsol: { vault: W_SOL_VAULT, mintToken: W_SOL_MINT_TOKEN },
+};
