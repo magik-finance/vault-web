@@ -259,9 +259,84 @@ export const MagikDataProvider: FC = ({ children }) => {
     [wallet, connection, program, fetchData]
   );
 
+  /**
+   * Liquidate position
+   */
+  const liquidatePosition = useCallback(
+    async () => {
+      if (!wallet.publicKey) throw new WalletNotConnectedError();
+      if (!program) throw new Error();
+
+      let instructions: TransactionInstruction[] = [];
+
+      const wSolTreasureAddress = await getWSolTreasureAddress(
+        wallet.publicKey
+      );
+      const wSolTreasureBump = await getWSolTreasureBump(wallet.publicKey);
+      const wSolVaultTokenAddress = await getWSolVaultTokenAddress();
+      const wSolSynthMintAddress = await getWSolSynthMintAddress();
+
+      if (
+        !wSolTreasureAddress ||
+        typeof wSolTreasureBump === "undefined" ||
+        !wSolVaultTokenAddress ||
+        !wSolSynthMintAddress
+      )
+        throw new Error();
+
+      const {
+        ata: userWSolTokenAddress,
+        instructions: userWSolTokenInstructions,
+      } = await findOrCreateATA({
+        connection,
+        payer: wallet.publicKey,
+        owner: wallet.publicKey,
+        mint: W_SOL_MINT_TOKEN,
+      });
+
+      instructions.push(...userWSolTokenInstructions);
+
+      const {
+        ata: userWSolSynthAddress,
+        instructions: userWSolSynthInstructions,
+      } = await findOrCreateATA({
+        connection,
+        payer: wallet.publicKey,
+        owner: wallet.publicKey,
+        mint: wSolSynthMintAddress,
+      });
+
+      instructions.push(...userWSolSynthInstructions);
+
+      if (instructions.length > 0) {
+        let transaction = new Transaction({ feePayer: wallet.publicKey });
+        transaction.instructions = [...instructions];
+        await wallet.sendTransaction(transaction, connection);
+      }
+
+      await program.rpc.liquidate({
+        accounts: {
+          treasure: wSolTreasureAddress,
+          userToken: userWSolTokenAddress,
+          vault: W_SOL_VAULT,
+          vaultToken: wSolVaultTokenAddress,
+          synthMint: wSolSynthMintAddress,
+          userSynth: userWSolSynthAddress,
+          owner: wallet.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+          rent: SYSVAR_RENT_PUBKEY,
+        },
+      });
+
+      await fetchData();
+    },
+    [wallet, connection, program, fetchData]
+  );
+
   /** initial fetch */
   useEffect(() => {
-    if (!isDataInitializedRef.current) fetchData();
+    if (!isDataInitializedRef.current) void fetchData();
   }, [fetchData]);
 
   const value = useMemo(
@@ -270,8 +345,9 @@ export const MagikDataProvider: FC = ({ children }) => {
       refetchMagikData: fetchData,
       depositWSol,
       borrowWSol,
+      liquidatePosition,
     }),
-    [data, fetchData, depositWSol, borrowWSol]
+    [data, fetchData, depositWSol, borrowWSol, liquidatePosition]
   );
 
   return (

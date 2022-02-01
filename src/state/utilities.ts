@@ -160,3 +160,4 @@ export async function getSplTokenBalance({
 
   return new BN(balance.value.amount);
 }
+
