@@ -1,7 +1,8 @@
-import { VFC, useCallback, useState } from "react";
+import { VFC, useCallback, useState, useMemo } from "react";
 
 import { Box } from "../../../components/Box";
 import { useMagikData } from "../../../state/magik";
+import { formatNumber } from "../../../utils/formatNumber";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -31,35 +32,40 @@ import { VaultMenu } from "../VaultMenu";
 
 import { StyledVaultSelect } from "./Deposit.styles";
 
-const valueOptions = [
-  { label: "Lending", value: "lending" },
-  { label: "Options", value: "options" },
-  { label: "Dual LP", value: "dual-lp" },
+const vaultOptions = [
+  { label: "Lending", value: "lending", apy: 8.5 },
+  { label: "Options", value: "options", apy: 25.2 },
+  { label: "Dual LP", value: "dual-lp", apy: 14.8 },
 ];
-
-const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
-  {
-    value: "usdc",
-    label: "USDC",
-    iconName: "usd-coin",
-    max: 23000,
-  },
-  {
-    value: "sol",
-    label: "SOL",
-    iconName: "solana-coin",
-    max: 11000,
-  },
-];
-
-const noop = () => {};
 
 export const Deposit: VFC = () => {
-  const [currency, setCurrency] = useState(
-    currencySelectAndInputOptions[0].value
-  );
+  const [vault, setVault] = useState(vaultOptions[0].value);
+  const [currency, setCurrency] = useState("usdc");
   const [amount, setAmount] = useState(0);
   const { magikData, depositWSol } = useMagikData();
+
+  const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = useMemo(
+    () => [
+      {
+        value: "usdc",
+        label: "USDC",
+        iconName: "usd-coin",
+        max: magikData.usdcBalance?.toNumber(),
+      },
+      {
+        value: "sol",
+        label: "wSOL",
+        iconName: "solana-coin",
+        max: magikData.wSolBalance?.toNumber(),
+      },
+    ],
+    [magikData.usdcBalance, magikData.wSolBalance]
+  );
+
+  const vaultOption = useMemo(
+    () => vaultOptions.find(({ value }) => value === vault)!,
+    [vault]
+  );
 
   const handleFormSubmit = useCallback(() => {
     depositWSol({ amount });
@@ -72,13 +78,11 @@ export const Deposit: VFC = () => {
         <VaultMenu />
         <Cards>
           <MainCard>
-            <div>-{magikData.wSolCurrentDeposit?.toString()}</div>
-            <div>-{magikData.wSolCurrentBorrow?.toString()}</div>
             <PageTitle tooltip="Deposit">Deposit</PageTitle>
             <StyledVaultSelect
-              options={valueOptions}
-              onChange={noop}
-              value={valueOptions[0].value}
+              options={vaultOptions}
+              onChange={setVault}
+              value={vault}
             />
             <SelectCollateralTitle>
               Choose a Collateral asset to deposit
@@ -111,7 +115,9 @@ export const Deposit: VFC = () => {
             >
               <StatsRow>
                 <StatsLabelRegular>Vault APY</StatsLabelRegular>
-                <StatsLabelMedium>15%</StatsLabelMedium>
+                <StatsLabelMedium>
+                  {formatNumber(vaultOption.apy)}%
+                </StatsLabelMedium>
               </StatsRow>
 
               <StatsRow>
