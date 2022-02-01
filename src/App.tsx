@@ -7,6 +7,7 @@ import Routes from "./Routes";
 import { Layout } from "./components/Layout";
 import { WalletWrapper } from "./components/WalletWrapper";
 import configureStore from "./state";
+import { MagikDataProvider } from "./state/magik";
 import { GlobalStyle } from "./styles/global-style";
 import { darkTheme } from "./styles/theme";
 
@@ -18,10 +19,12 @@ export const App: React.FC = () => {
       <Provider store={store}>
         <BrowserRouter>
           <ThemeProvider theme={darkTheme}>
-            <GlobalStyle />
-            <Layout>
-              <Routes />
-            </Layout>
+            <MagikDataProvider>
+              <GlobalStyle />
+              <Layout>
+                <Routes />
+              </Layout>
+            </MagikDataProvider>
           </ThemeProvider>
         </BrowserRouter>
       </Provider>

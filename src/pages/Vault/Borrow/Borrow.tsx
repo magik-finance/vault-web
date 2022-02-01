@@ -13,8 +13,8 @@ import { Box } from "../../../components/Box";
 import { Icon } from "../../../components/Icon";
 import {
   MAGIK_PROGRAM_ID,
-  MINT_TOKEN_PUB_KEY,
-  VAULT_PUB_KEY,
+  W_SOL_MINT_TOKEN,
+  W_SOL_VAULT,
 } from "../../../constants/solana";
 import { VaultIdl } from "../../../interfaces/vault";
 import { findOrCreateATA } from "../../../solana";
@@ -77,8 +77,8 @@ export const Borrow: VFC = () => {
     const instructions: TransactionInstruction[] = [];
 
     const treasureSeed = Buffer.from("treasure");
-    const vault = new PublicKey(VAULT_PUB_KEY);
-    const wSolMint = new PublicKey(MINT_TOKEN_PUB_KEY);
+    const vault = new PublicKey(W_SOL_VAULT);
+    const wSolMint = new PublicKey(W_SOL_MINT_TOKEN);
 
     const [treasure, trBump] = await PublicKey.findProgramAddress(
       [treasureSeed, vault.toBuffer(), user.toBuffer()],

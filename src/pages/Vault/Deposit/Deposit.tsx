@@ -1,20 +1,7 @@
-import { Program, Provider, BN } from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  Transaction,
-  SystemProgram,
-  SYSVAR_RENT_PUBKEY,
-  TransactionInstruction,
-} from "@solana/web3.js";
-import { PublicKey } from "@solana/web3.js";
-import { VFC, useCallback, useState, useEffect } from "react";
+import { VFC, useCallback, useState } from "react";
 
 import { Box } from "../../../components/Box";
-import { MAGIK_PROGRAM_ID } from "../../../constants/solana";
-import { VaultIdl } from "../../../interfaces/vault";
-import { findOrCreateATA } from "../../../solana";
+import { useMagikData } from "../../../state/magik";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -68,148 +55,15 @@ const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = [
 const noop = () => {};
 
 export const Deposit: VFC = () => {
-  const { connection } = useConnection();
   const [currency, setCurrency] = useState(
     currencySelectAndInputOptions[0].value
   );
   const [amount, setAmount] = useState(0);
-  const wallet = useWallet();
+  const { magikData, depositWSol } = useMagikData();
 
-  const test = useCallback(() => {
-    (async () => {
-      const provider = new Provider(connection, wallet as any, {
-        preflightCommitment: "processed",
-      });
-
-      const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
-      const user = wallet.publicKey!;
-
-      const vault = new PublicKey(
-        "5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog"
-      );
-      const wSolMint = new PublicKey(
-        "So11111111111111111111111111111111111111112"
-      );
-
-      const [userTreasure] = await PublicKey.findProgramAddress(
-        [Buffer.from("treasure"), vault.toBuffer(), user.toBuffer()],
-        program.programId
-      );
-
-      const treasures = await program.account.treasure.all();
-
-      for (const treasure of treasures) {
-        const { account, publicKey } = treasure;
-        if (publicKey.toBase58() === userTreasure.toBase58()) {
-          console.log("currentDeposit", account.currentDeposit.toString());
-          console.log("currentBorrow", account.currentBorrow.toString());
-        }
-      }
-
-      const vaults = await program.account.vault.all();
-
-      for (const someVault of vaults) {
-        console.log("mintToken", someVault.account.mintToken.toBase58());
-        console.log("payer", someVault.account.payer.toBase58());
-        console.log("percent", someVault.account.percent.toString());
-        console.log("synthToken", someVault.account.synthToken.toBase58());
-        console.log("totalDeposit", someVault.account.totalDeposit.toString());
-        console.log("vaultToken", someVault.account.vaultToken.toBase58());
-      }
-
-      const [synth_mint] = await PublicKey.findProgramAddress(
-        [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
-        program.programId
-      );
-
-      console.log("synth_mint", synth_mint.toBase58());
-    })();
-  }, [connection, wallet]);
-
-  const depositFunds = useCallback(async () => {
-    if (!wallet.publicKey) throw new WalletNotConnectedError();
-
-    const provider = new Provider(connection, wallet as any, {
-      preflightCommitment: "processed",
-    });
-
-    const program = new Program(VaultIdl, MAGIK_PROGRAM_ID, provider);
-
-    const treasureSeed = Buffer.from("treasure");
-    const vault = new PublicKey("5Acwv2Sztq8vZJnMVLEXZw3rL6by8CHhU8BMmuX1ELog");
-    const wSolMint = new PublicKey(
-      "So11111111111111111111111111111111111111112"
-    );
-
-    const user = wallet.publicKey;
-
-    const [treasure, trBump] = await PublicKey.findProgramAddress(
-      [treasureSeed, vault.toBuffer(), user.toBuffer()],
-      program.programId
-    );
-
-    const [synth_mint] = await PublicKey.findProgramAddress(
-      [Buffer.from("synth_mint"), wSolMint.toBuffer(), vault.toBuffer()],
-      program.programId
-    );
-    const instructions: TransactionInstruction[] = [];
-    const [vaultToken] = await PublicKey.findProgramAddress(
-      [Buffer.from("vault_token"), wSolMint.toBuffer(), vault.toBuffer()],
-      program.programId
-    );
-    const userToken = await findOrCreateATA(
-      connection,
-      user,
-      user,
-      wSolMint,
-      instructions
-    );
-    const userSynth = await findOrCreateATA(
-      connection,
-      user,
-      user,
-      synth_mint,
-      instructions
-    );
-
-    console.log("IX ", instructions);
-    console.log("vaultToken ", vaultToken.toBase58());
-    console.log("use ", user.toBase58());
-    console.log("userToken ", userToken.toBase58());
-    console.log("userSynth ", userSynth.toBase58());
-    console.log("synth_mint ", synth_mint.toBase58());
-    console.log("treasure ", treasure.toBase58());
-
-    if (instructions.length > 0) {
-      let transaction = new Transaction({ feePayer: user });
-      transaction.instructions = [...instructions];
-      const tx = await wallet.sendTransaction(transaction, connection);
-      console.log("CREAT ATA: ", tx);
-    }
-
-    const depositAmount = 1000;
-    const depositTransaction = await program.rpc.deposit(
-      new BN(trBump),
-      new BN(depositAmount),
-      {
-        accounts: {
-          treasure: treasure,
-          userToken: userToken,
-          vault: vault,
-          vaultToken: vaultToken,
-          userSynth: userSynth,
-          owner: user,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      }
-    );
-
-    console.log(depositTransaction);
-
-    return depositTransaction;
-  }, [wallet, connection]);
+  const handleFormSubmit = useCallback(() => {
+    depositWSol({ amount });
+  }, [depositWSol, amount]);
 
   return (
     <Container>
@@ -218,7 +72,8 @@ export const Deposit: VFC = () => {
         <VaultMenu />
         <Cards>
           <MainCard>
-            <button onClick={test}>Test</button>
+            <div>-{magikData.wSolCurrentDeposit?.toString()}</div>
+            <div>-{magikData.wSolCurrentBorrow?.toString()}</div>
             <PageTitle tooltip="Deposit">Deposit</PageTitle>
             <StyledVaultSelect
               options={valueOptions}
@@ -289,7 +144,7 @@ export const Deposit: VFC = () => {
                 <StatsLabelRegular>$ 24.005,00</StatsLabelRegular>
               </StatsRow>
             </Box>
-            <MainCardActionButton onClick={depositFunds}>
+            <MainCardActionButton onClick={handleFormSubmit}>
               Deposit your assets
             </MainCardActionButton>
           </MainCard>
