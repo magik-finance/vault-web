@@ -2,11 +2,7 @@ import { BN, Program, Provider } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { WalletNotConnectedError } from "@solana/wallet-adapter-base";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import {
-  PublicKey,
-  SystemProgram,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import { PublicKey, SystemProgram } from "@solana/web3.js";
 import { useCallback, useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
@@ -94,14 +90,12 @@ export const Borrow: VFC = () => {
       program.programId
     );
 
-    const userSynth = await findOrCreateATA(
-      {
-        connection,
-        payer: wallet.publicKey,
-        owner: wallet.publicKey,
-        mint: W_SOL_MINT_TOKEN,
-      }
-    );
+    const userSynth = await findOrCreateATA({
+      connection,
+      payer: wallet.publicKey,
+      owner: wallet.publicKey,
+      mint: W_SOL_MINT_TOKEN,
+    });
 
     const loanAmount = 1000; //Hardcode
     const loanTransaction = await program.rpc.borrow(
@@ -212,7 +206,9 @@ export const Borrow: VFC = () => {
                 0.00
               </Box>
             </Box>
-            <MainCardActionButton onClick={requestLoan}>Confirm the loan</MainCardActionButton>
+            <MainCardActionButton onClick={requestLoan}>
+              Confirm the loan
+            </MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Collateral preview</SideCardTitle>
