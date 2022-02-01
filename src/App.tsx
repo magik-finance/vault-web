@@ -12,16 +12,16 @@ import { darkTheme } from "./styles/theme";
 export const App: React.FC = () => {
   return (
     <WalletWrapper>
-        <BrowserRouter>
-          <ThemeProvider theme={darkTheme}>
-            <MagikDataProvider>
-              <GlobalStyle />
-              <Layout>
-                <Routes />
-              </Layout>
-            </MagikDataProvider>
-          </ThemeProvider>
-        </BrowserRouter>
+      <BrowserRouter>
+        <ThemeProvider theme={darkTheme}>
+          <MagikDataProvider>
+            <GlobalStyle />
+            <Layout>
+              <Routes />
+            </Layout>
+          </MagikDataProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     </WalletWrapper>
   );
 };
