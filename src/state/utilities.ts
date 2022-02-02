@@ -1,4 +1,4 @@
-import { BN, Program, Provider } from "@project-serum/anchor";
+import { Program, Provider } from "@project-serum/anchor";
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -133,7 +133,7 @@ export async function getSolBalance({
   connection,
   walletAddress,
 }: GetSolBalanceProps) {
-  return new BN((await connection.getBalance(walletAddress)) / Math.pow(10, 9));
+  return (await connection.getBalance(walletAddress)) / Math.pow(10, 9);
 }
 
 interface GetSplTokenBalanceProps {
@@ -156,11 +156,11 @@ export async function getCoinBalance({
 
   const [tokenAccount] = tokenAccounts.value;
 
-  if (!tokenAccount) return new BN(0);
+  if (!tokenAccount) return 0;
 
   const balance = await connection.getTokenAccountBalance(tokenAccount.pubkey);
 
-  if (!balance.value.uiAmountString) return new BN("0", 10);
+  if (!balance.value.amount) return 0;
 
-  return new BN(balance.value.amount);
+  return Number(balance.value.amount);
 }

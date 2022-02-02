@@ -26,9 +26,21 @@ export const coins: Coin[] = ["usdc", "wsol"];
 export interface CoinConfig {
   vault: PublicKey;
   mintToken: PublicKey;
+  decimalPlaces: number;
+  label: string;
 }
 
 export const coinConfigs: Record<Coin, CoinConfig> = {
-  usdc: { vault: USDC_VAULT, mintToken: USDC_MINT_TOKEN },
-  wsol: { vault: W_SOL_VAULT, mintToken: W_SOL_MINT_TOKEN },
+  usdc: {
+    vault: USDC_VAULT,
+    mintToken: USDC_MINT_TOKEN,
+    decimalPlaces: 6,
+    label: "USDC",
+  },
+  wsol: {
+    vault: W_SOL_VAULT,
+    mintToken: W_SOL_MINT_TOKEN,
+    decimalPlaces: 9,
+    label: "wSOL",
+  },
 };

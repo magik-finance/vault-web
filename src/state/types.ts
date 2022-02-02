@@ -1,5 +1,3 @@
-import { BN } from "@project-serum/anchor";
-
 import { Coin } from "../constants/solana";
 
 import { BorrowProps } from "./useBorrow";
@@ -7,13 +5,13 @@ import { DepositProps } from "./useDeposit";
 import { LiquidateProps } from "./useLiquidate";
 
 export interface MagikCoinData {
-  balance?: BN;
-  currentDeposit?: BN;
-  currentBorrow?: BN;
+  balance?: number;
+  currentDeposit?: number;
+  currentBorrow?: number;
 }
 
 export interface MagikData extends Record<Coin, MagikCoinData> {
-  solBalance?: BN;
+  solBalance?: number;
 }
 
 export interface MagikDataContextValue {

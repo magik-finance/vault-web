@@ -29,19 +29,19 @@ export const useFetchData = ({
 
     let coinData: Record<Coin, MagikCoinData> = { usdc: {}, wsol: {} };
 
+    const allTreasures = await program.account.treasure.all();
+
     for (const coin of coins) {
       const treasureAddress = await getTreasureAddress(coin, wallet.publicKey);
-      if (!treasureAddress) return;
-
-      const allTreasures = await program.account.treasure.all();
+      if (!treasureAddress) continue;
 
       const treasure = allTreasures.find(
         ({ publicKey }) => publicKey.toBase58() === treasureAddress.toBase58()
       );
-      if (!treasure) return;
+      if (!treasure) continue;
 
-      const currentDeposit = treasure?.account.currentDeposit;
-      const currentBorrow = treasure?.account.currentBorrow;
+      const currentDeposit = treasure?.account.currentDeposit.toNumber();
+      const currentBorrow = treasure?.account.currentBorrow.toNumber();
       const balance = await getCoinBalance({
         coin,
         connection,

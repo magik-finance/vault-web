@@ -51,13 +51,13 @@ export const Deposit: VFC = () => {
         value: "usdc",
         label: "USDC",
         iconName: "usd-coin",
-        max: magikData.usdc.balance?.toNumber(),
+        max: magikData.usdc.balance,
       },
       {
         value: "wsol",
         label: "wSOL",
         iconName: "solana-coin",
-        max: magikData.wsol.balance?.toNumber(),
+        max: magikData.wsol.balance,
       },
     ],
     [magikData.usdc.balance, magikData.wsol.balance]
