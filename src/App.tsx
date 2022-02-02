@@ -1,5 +1,4 @@
 import React from "react";
-// @ts-ignore
 import { NotificationContainer } from "react-notifications";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
