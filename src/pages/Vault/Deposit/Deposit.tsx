@@ -1,9 +1,14 @@
 import { VFC, useCallback, useState, useMemo } from "react";
 
 import { Box } from "../../../components/Box";
-import { Coin } from "../../../constants/solana";
+import { Coin, coinConfigs } from "../../../constants/solana";
 import { useMagikData } from "../../../state/magik";
-import { formatNumber } from "../../../utils/formatNumber";
+import {
+  coinAmountFloatToInteger,
+  coinAmountIntegerToFloat,
+  formatCoinNumber,
+  formatNumber,
+} from "../../../utils/formatNumber";
 import { BalanceBox } from "../BalanceBox";
 import {
   CurrencySelectAndInput,
@@ -34,16 +39,16 @@ import { VaultMenu } from "../VaultMenu";
 import { StyledVaultSelect } from "./Deposit.styles";
 
 const vaultOptions = [
-  { label: "Lending", value: "lending", apy: 8.5 },
-  { label: "Options", value: "options", apy: 25.2 },
-  { label: "Dual LP", value: "dual-lp", apy: 14.8 },
+  { label: "Lending", value: "lending", apy: 9.2 },
+  { label: "Options", value: "options", apy: 21.6 },
+  { label: "Dual LP", value: "dual-lp", apy: 15.9 },
 ];
 
 export const Deposit: VFC = () => {
   const [vault, setVault] = useState(vaultOptions[0].value);
   const [coin, setCoin] = useState<Coin>("usdc");
   const [amount, setAmount] = useState(0);
-  const { magikData, deposit } = useMagikData();
+  const { magikData, deposit, deposits } = useMagikData();
 
   const currencySelectAndInputOptions: CurrencySelectAndInputOption[] = useMemo(
     () => [
@@ -51,13 +56,13 @@ export const Deposit: VFC = () => {
         value: "usdc",
         label: "USDC",
         iconName: "usd-coin",
-        max: magikData.usdc.balance,
+        max: coinAmountIntegerToFloat("usdc", magikData.usdc.balance),
       },
       {
         value: "wsol",
         label: "wSOL",
         iconName: "solana-coin",
-        max: magikData.wsol.balance,
+        max: coinAmountIntegerToFloat("wsol", magikData.wsol.balance),
       },
     ],
     [magikData.usdc.balance, magikData.wsol.balance]
@@ -69,8 +74,12 @@ export const Deposit: VFC = () => {
   );
 
   const handleFormSubmit = useCallback(() => {
-    deposit({ coin, amount });
+    deposit({ coin, amount: coinAmountFloatToInteger(coin, amount) });
   }, [deposit, amount, coin]);
+
+  const reserveDepositLimit = coin === "usdc" ? 6000000000000 : 5000000000000;
+
+  console.log("magikData[coin].balance", magikData[coin]);
 
   return (
     <Container>
@@ -79,17 +88,20 @@ export const Deposit: VFC = () => {
         <VaultMenu />
         <Cards>
           <MainCard>
-            <PageTitle tooltip="Deposit">Deposit</PageTitle>
+            <PageTitle tooltip="You choose a vault strategy and Magik maximizes returns by creating the optimal portfolio">
+              Deposit
+            </PageTitle>
             <StyledVaultSelect
               options={vaultOptions}
               onChange={setVault}
               value={vault}
             />
             <SelectCollateralTitle>
-              Choose a Collateral asset to deposit
+              Choose an asset to deposit
             </SelectCollateralTitle>
             <SelectCollateralDescription>
-              Based on the amount of collateral you can get a loan
+              Your deposits will be used as collateral while generate APY from
+              Magik's vaults
             </SelectCollateralDescription>
             <Box height="44px" />
             <CurrencySelectAndInput
@@ -123,19 +135,9 @@ export const Deposit: VFC = () => {
 
               <StatsRow>
                 <StatsLabelRegular>Reserve deposit limit</StatsLabelRegular>
-                <StatsLabelMedium>6,000,000 SOL</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>Borrow limit</StatsLabelRegular>
-                <StatsLabelMedium>$ 0.00</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>Liquidity</StatsLabelRegular>
-                <StatsLabelMedium>0 %</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>Supply APY</StatsLabelRegular>
-                <StatsLabelMedium>1.92 %</StatsLabelMedium>
+                <StatsLabelMedium>
+                  {formatCoinNumber(coin, reserveDepositLimit)}
+                </StatsLabelMedium>
               </StatsRow>
             </Box>
             <MainCardDivider />
@@ -147,21 +149,31 @@ export const Deposit: VFC = () => {
               padding="20px 0 32px"
             >
               <StatsRow>
-                <StatsLabelBold>USDC in wallet</StatsLabelBold>
-                <StatsLabelRegular>$ 24.005,00</StatsLabelRegular>
+                <StatsLabelBold>
+                  {coinConfigs[coin].label} in wallet
+                </StatsLabelBold>
+                <StatsLabelRegular>
+                  {formatCoinNumber(coin, magikData[coin].balance)}
+                </StatsLabelRegular>
               </StatsRow>
             </Box>
             <MainCardActionButton onClick={handleFormSubmit}>
-              Deposit your assets
+              Deposit
             </MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Total deposited</SideCardTitle>
             <Box height="40px" />
             <BalanceBox
-              currencyIcon="usd-coin"
-              amount="45.000,00"
-              currency="USDC"
+              currencyIcon={coinConfigs[coin].coinIcon}
+              amount={formatCoinNumber(
+                coin,
+                magikData[coin].currentDeposit ?? 0,
+                {
+                  skipLabel: true,
+                }
+              )}
+              currency={coinConfigs[coin].label}
               label="Current deposit"
             />
             <Box height="44px" />
@@ -175,26 +187,23 @@ export const Deposit: VFC = () => {
               padding="24px 0"
               gap="24px"
             >
-              <StatsRow>
-                <StatsLabelRegular>12.05.2021</StatsLabelRegular>
-                <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>07.05.2021</StatsLabelRegular>
-                <StatsLabelMedium>5 SOL</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>06.05.2021</StatsLabelRegular>
-                <StatsLabelMedium>45.000,00 USDC</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>02.05.2021</StatsLabelRegular>
-                <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>01.05.2021</StatsLabelRegular>
-                <StatsLabelMedium>318.67 USDC</StatsLabelMedium>
-              </StatsRow>
+              {deposits.map(({ amount, coin, timestamp }) => (
+                <StatsRow key={timestamp}>
+                  <StatsLabelRegular>
+                    {new Date(timestamp).toLocaleDateString("en-US", {
+                      dateStyle: "medium",
+                    })}
+                  </StatsLabelRegular>
+                  <StatsLabelMedium>
+                    {formatCoinNumber(coin, amount)}
+                  </StatsLabelMedium>
+                </StatsRow>
+              ))}
+              {deposits.length === 0 ? (
+                <Box fontWeight="500" color="fadedOutFont">
+                  No deposits yet
+                </Box>
+              ) : null}
             </Box>
             <Separator />
           </SideCard>

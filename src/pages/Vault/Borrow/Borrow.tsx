@@ -1,8 +1,10 @@
-import { useCallback, useState, VFC } from "react";
+import { useCallback, useMemo, useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
 import { Icon } from "../../../components/Icon";
+import { Coin, coinConfigs } from "../../../constants/solana";
 import { useMagikData } from "../../../state/magik";
+import { formatCoinNumber } from "../../../utils/formatNumber";
 import { BalanceBox } from "../BalanceBox";
 import { CollateralRatioSlider } from "../CollateralRatioSlider";
 import { CurrencySelectOption } from "../CurrencySelect";
@@ -15,38 +17,45 @@ import {
   MainCard,
   MainCardActionButton,
   MainCardDivider,
-  SelectCollateralDescription,
   SelectCollateralField,
   SelectCollateralTitle,
-  Separator,
   SideCard,
   SideCardTitle,
-  StatsLabelMedium,
-  StatsLabelRegular,
-  StatsRow,
-  StatsTitle,
 } from "../Vault.styles";
 import { VaultMenu } from "../VaultMenu";
 
-const collateralOptions: CurrencySelectOption[] = [
-  {
-    iconName: "usd-coin",
-    label: "USDC",
-    value: "usdc",
-    amount: "45.000,00",
-  },
-  {
-    iconName: "solana-coin",
-    label: "wSOL",
-    value: "wsol",
-    amount: "20.000,00",
-  },
-];
-
 export const Borrow: VFC = () => {
-  const [coin, setCoin] = useState(collateralOptions[0].value);
-  const [collateralRatio, setCollateralRatio] = useState(50);
-  const { borrow } = useMagikData();
+  const [coin, setCoin] = useState<Coin>("usdc");
+  const [collateralRatio, setCollateralRatio] = useState(25);
+  const { borrow, magikData } = useMagikData();
+
+  const collateralOptions: CurrencySelectOption[] = useMemo(
+    () => [
+      {
+        iconName: "usd-coin",
+        label: "USDC",
+        value: "usdc",
+        amount: formatCoinNumber("usdc", magikData.usdc.currentDeposit ?? 0, {
+          skipLabel: true,
+        }),
+      },
+      {
+        iconName: "solana-coin",
+        label: "wSOL",
+        value: "wsol",
+        amount: formatCoinNumber("wsol", magikData.wsol.currentDeposit ?? 0, {
+          skipLabel: true,
+        }),
+      },
+    ],
+    [magikData.usdc.currentDeposit, magikData.wsol.currentDeposit]
+  );
+
+  console.log("collateralRatio", collateralRatio);
+  const borrowAmount = useMemo(
+    () => (magikData[coin].currentDeposit ?? 0) * (collateralRatio / 100),
+    [magikData, collateralRatio, coin]
+  );
 
   const handleCollateralRatioChange = useCallback((value: number) => {
     setCollateralRatio(value);
@@ -65,9 +74,6 @@ export const Borrow: VFC = () => {
             <SelectCollateralTitle>
               Choose a Collateral asset
             </SelectCollateralTitle>
-            <SelectCollateralDescription>
-              Collateral assets may affect the minimum collateral ratio
-            </SelectCollateralDescription>
             <SelectCollateralField
               options={collateralOptions}
               value={coin}
@@ -82,10 +88,11 @@ export const Borrow: VFC = () => {
             >
               <Box>
                 <Box fontSize="20px" fontWeight="500">
-                  Set up a collateral ratio
+                  Choose borrow amount
                 </Box>
                 <Box fontWeight="500" color="fadedOutFont" paddingTop="12px">
-                  Positions below the minimum will be liquidated
+                  You can take out a loan up to 50% of the value of your
+                  deposits
                 </Box>
               </Box>
               <Box
@@ -97,7 +104,7 @@ export const Borrow: VFC = () => {
                 gap="48px"
                 fontWeight="500"
               >
-                <Box>{collateralRatio}%</Box>
+                <Box>50%</Box>
                 <Box color="fadedOutFont">MAX</Box>
               </Box>
             </Box>
@@ -129,52 +136,31 @@ export const Borrow: VFC = () => {
               <Box width="24px" height="24px">
                 <Icon width="100%" height="100%" type="magik-coin" />
               </Box>
-              mgUSDC
+              {coinConfigs[coin].mgLabel}
               <Box marginLeft="auto" display="flex" alignItems="center">
-                0.00
+                {formatCoinNumber(coin, borrowAmount, { skipLabel: true })}
               </Box>
             </Box>
             <MainCardActionButton onClick={() => borrow({ coin, amount: 1 })}>
-              Confirm the loan
+              Confirm
             </MainCardActionButton>
           </MainCard>
           <SideCard>
             <SideCardTitle>Collateral preview</SideCardTitle>
             <Box height="40px" />
             <BalanceBox
-              currencyIcon="usd-coin"
-              amount="45.000,00"
-              currency="USDC"
-              label="Balance: 318.67 USDC"
+              currencyIcon={coinConfigs[coin].coinIcon}
+              amount={formatCoinNumber(
+                coin,
+                magikData[coin].currentDeposit ?? 0,
+                { skipLabel: true }
+              )}
+              currency={coinConfigs[coin].label}
+              label={`Balance: ${formatCoinNumber(
+                coin,
+                magikData[coin].balance ?? 0
+              )}`}
             />
-            <Box height="44px" />
-            <StatsTitle>Conversion details</StatsTitle>
-            <Box height="24px" />
-            <Separator />
-            <Box
-              display="flex"
-              width="100%"
-              flexDirection="column"
-              padding="24px 0"
-              gap="24px"
-            >
-              <StatsRow>
-                <StatsLabelRegular>Exchange Price</StatsLabelRegular>
-                <StatsLabelMedium>45.000,00 USDC</StatsLabelMedium>
-              </StatsRow>
-              <StatsRow>
-                <StatsLabelRegular>Premium</StatsLabelRegular>
-                <StatsLabelMedium>-0.04%</StatsLabelMedium>
-              </StatsRow>
-            </Box>
-            <Separator />
-            <Box height="24px" />
-            <StatsRow>
-              <StatsLabelRegular>Liquidity</StatsLabelRegular>
-              <StatsLabelMedium>17.33M USDC</StatsLabelMedium>
-            </StatsRow>
-            <Box height="24px" />
-            <Separator />
           </SideCard>
         </Cards>
       </InnerContainer>

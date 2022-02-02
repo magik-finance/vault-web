@@ -9,6 +9,8 @@ import {
   useState,
 } from "react";
 
+import { useLocalStorage } from "../utils/useLocalStorage";
+
 import { MagikData, MagikDataContextValue } from "./types";
 import { useBorrow } from "./useBorrow";
 import { useDeposit } from "./useDeposit";
@@ -25,6 +27,7 @@ const defaultData: MagikData = { usdc: {}, wsol: {} };
 export const MagikDataProvider: FC = ({ children }) => {
   const isDataInitializedRef = useRef(false);
   const [data, setData] = useState<MagikData>(defaultData);
+  const [deposits, setDeposits] = useLocalStorage("deposits");
   const { connection } = useConnection();
   const wallet = useWallet();
   const program = useProgram();
@@ -36,7 +39,13 @@ export const MagikDataProvider: FC = ({ children }) => {
     setData,
     isDataInitializedRef,
   });
-  const deposit = useDeposit({ wallet, connection, program, fetchData });
+  const deposit = useDeposit({
+    wallet,
+    connection,
+    program,
+    fetchData,
+    setDeposits,
+  });
   const borrow = useBorrow({ wallet, connection, program, fetchData });
   const liquidate = useLiquidate({ wallet, connection, program, fetchData });
 
@@ -48,12 +57,13 @@ export const MagikDataProvider: FC = ({ children }) => {
   const value = useMemo(
     () => ({
       magikData: data,
+      deposits: deposits ?? [],
       refetchMagikData: fetchData,
       deposit,
       borrow,
       liquidate,
     }),
-    [data, fetchData, deposit, borrow, liquidate]
+    [data, deposits, fetchData, deposit, borrow, liquidate]
   );
 
   return (

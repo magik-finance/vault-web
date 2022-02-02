@@ -9,10 +9,11 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
+import { Deposit } from "../utils/useLocalStorage";
 
 import {
   findOrCreateATA,
@@ -27,6 +28,7 @@ export interface UseDepositProps {
   program: Program<VaultProgram> | undefined;
   connection: Connection;
   fetchData: () => Promise<void>;
+  setDeposits: Dispatch<SetStateAction<Deposit[] | undefined>>;
 }
 
 export interface DepositProps {
@@ -39,6 +41,7 @@ export const useDeposit = ({
   program,
   connection,
   fetchData,
+  setDeposits,
 }: UseDepositProps) =>
   useCallback(
     async ({ coin, amount }: DepositProps) => {
@@ -100,7 +103,12 @@ export const useDeposit = ({
         },
       });
 
+      setDeposits((previous) => [
+        { amount, coin, timestamp: +new Date() },
+        ...(previous ?? []),
+      ]);
+
       await fetchData();
     },
-    [wallet, connection, program, fetchData]
+    [wallet, connection, program, fetchData, setDeposits]
   );

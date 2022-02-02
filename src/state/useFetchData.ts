@@ -32,16 +32,31 @@ export const useFetchData = ({
     const allTreasures = await program.account.treasure.all();
 
     for (const coin of coins) {
-      const treasureAddress = await getTreasureAddress(coin, wallet.publicKey);
-      if (!treasureAddress) continue;
+      try {
+        const treasureAddress = await getTreasureAddress(
+          coin,
+          wallet.publicKey
+        );
+        if (!treasureAddress) throw new Error();
 
-      const treasure = allTreasures.find(
-        ({ publicKey }) => publicKey.toBase58() === treasureAddress.toBase58()
-      );
-      if (!treasure) continue;
+        const treasure = allTreasures.find(
+          ({ publicKey }) => publicKey.toBase58() === treasureAddress.toBase58()
+        );
+        if (!treasure) throw new Error();
 
-      const currentDeposit = treasure?.account.currentDeposit.toNumber();
-      const currentBorrow = treasure?.account.currentBorrow.toNumber();
+        const currentDeposit = treasure?.account.currentDeposit.toNumber();
+        const currentBorrow = treasure?.account.currentBorrow.toNumber();
+
+        coinData = {
+          ...coinData,
+          [coin]: {
+            ...coinData[coin],
+            currentDeposit,
+            currentBorrow,
+          },
+        };
+      } catch (error) {}
+
       const balance = await getCoinBalance({
         coin,
         connection,
@@ -52,8 +67,6 @@ export const useFetchData = ({
         ...coinData,
         [coin]: {
           ...coinData[coin],
-          currentDeposit,
-          currentBorrow,
           balance,
         },
       };

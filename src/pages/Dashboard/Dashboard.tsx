@@ -37,25 +37,26 @@ interface SideCardSectionType {
 
 const sideCardSections: SideCardSectionType[] = [
   {
-    title: "Deposit collateral",
-    buttonLabel: "Deposit collateral",
+    title: "Deposit into Vault",
+    buttonLabel: "Deposit",
     buttonIcon: "sell",
     to: DEPOSIT,
-    description: "Collateral assets may affect the minimum collateral ratio",
+    description: "Deposits will generate yield based on the vault selected",
   },
   {
     title: "Borrow assets",
-    buttonLabel: "Borrow assets",
+    buttonLabel: "Borrow",
     buttonIcon: "buy",
     to: BORROW,
-    description: "Get a loan based on the deposited collateral",
+    description:
+      "Take out an interest-free loan depending on the amount of collateral deposited",
   },
   {
     title: "Liquidate all funds",
-    buttonLabel: "Liquidate all funds",
+    buttonLabel: "Liquidate",
     buttonIcon: "diamond-hands",
     to: LIQUIDATE,
-    description: "Liquidating is immediate, your funds are back in your wallet",
+    description: "Magik will immediately return all deposits after liquidation",
   },
 ];
 

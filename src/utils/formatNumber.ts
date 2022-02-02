@@ -9,10 +9,29 @@ export function formatNumber(input?: number): string {
     : "";
 }
 
-export function formatCoinNumber(coin: Coin, input?: number): string {
+export function coinAmountIntegerToFloat(coin: Coin, input?: number): number {
   const decimalPlaces = coinConfigs[coin].decimalPlaces;
+  return typeof input === "number" ? input / Math.pow(10, decimalPlaces) : 0;
+}
+
+export function coinAmountFloatToInteger(coin: Coin, input?: number): number {
+  const decimalPlaces = coinConfigs[coin].decimalPlaces;
+  return typeof input === "number" ? input * Math.pow(10, decimalPlaces) : 0;
+}
+
+interface FormatCoinNumberOptions {
+  skipLabel?: boolean;
+}
+
+export function formatCoinNumber(
+  coin: Coin,
+  input?: number,
+  options: FormatCoinNumberOptions = {}
+): string {
   const label = coinConfigs[coin].label;
   return typeof input === "number"
-    ? `${formatNumber(input / Math.pow(10, decimalPlaces))} ${label}`
+    ? `${formatNumber(coinAmountIntegerToFloat(coin, input))}${
+        options.skipLabel ? "" : ` ${label}`
+      }`
     : "";
 }

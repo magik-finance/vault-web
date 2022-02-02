@@ -1,5 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
+import { IconName } from "../components/Icon";
+
 export const MAGIK_PROGRAM_ID = new PublicKey(
   "CmHZHMPRfsNpYZe1YUJA59EaCfZiQqJAyBrx9oA3QtCg"
 );
@@ -28,6 +30,8 @@ export interface CoinConfig {
   mintToken: PublicKey;
   decimalPlaces: number;
   label: string;
+  mgLabel: string;
+  coinIcon: IconName;
 }
 
 export const coinConfigs: Record<Coin, CoinConfig> = {
@@ -36,11 +40,15 @@ export const coinConfigs: Record<Coin, CoinConfig> = {
     mintToken: USDC_MINT_TOKEN,
     decimalPlaces: 6,
     label: "USDC",
+    mgLabel: "mgUSD",
+    coinIcon: "usd-coin",
   },
   wsol: {
     vault: W_SOL_VAULT,
     mintToken: W_SOL_MINT_TOKEN,
     decimalPlaces: 9,
     label: "wSOL",
+    mgLabel: "mgSOL",
+    coinIcon: "solana-coin",
   },
 };

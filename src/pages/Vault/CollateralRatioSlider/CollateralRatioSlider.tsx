@@ -21,9 +21,9 @@ const Mark: VFC<MarkProps> = ({ value, isFirst, isLast }) => (
   </MarkContainer>
 );
 
-const marksWithValuesToShow = [25, 50, 75, 100];
-const markValues = [...new Array(100 - 25 + 1)]
-  .map((_, index) => 25 + index)
+const marksWithValuesToShow = [0, 25, 50];
+const markValues = [...new Array(100 - 50 + 1)]
+  .map((_, index) => index)
   .filter((value) => value % 5 === 0);
 const marks = markValues.reduce(
   (sum, value, index) => ({
@@ -45,10 +45,10 @@ export const CollateralRatioSlider: VFC<
   ComponentProps<typeof SliderWithTooltip>
 > = (props) => (
   <StyledSliderWithTooltip
-    min={25}
-    max={100}
+    min={0}
+    max={50}
     step={1}
-    defaultValue={50}
+    defaultValue={25}
     marks={marks}
     tipFormatter={tipFormatter}
     railStyle={{ backgroundColor: "#4E27B2" }}

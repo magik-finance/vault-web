@@ -86,7 +86,7 @@ export const Cards = styled.main`
 export const InnerContainer = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.sizing.pageContentMaxWidth}px;
-  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px;
+  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px 96px;
   padding-top: 58px;
 `;
 
