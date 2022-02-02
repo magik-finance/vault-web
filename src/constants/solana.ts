@@ -47,7 +47,7 @@ export const coinConfigs: Record<Coin, CoinConfig> = {
     vault: W_SOL_VAULT,
     mintToken: W_SOL_MINT_TOKEN,
     decimalPlaces: 9,
-    label: "wSOL",
+    label: "SOL",
     mgLabel: "mgSOL",
     coinIcon: "solana-coin",
   },
