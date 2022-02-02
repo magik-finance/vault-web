@@ -5,7 +5,10 @@ import {
 } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import {
+  getCoin98Wallet,
+  getLedgerWallet,
   getPhantomWallet,
+  getSlopeWallet,
   getSolflareWallet,
   getSolflareWebWallet,
 } from "@solana/wallet-adapter-wallets";
@@ -21,6 +24,9 @@ export const WalletWrapper: FC = (props: PropsWithChildren<any>) => {
       getPhantomWallet(),
       getSolflareWebWallet({ network }),
       getSolflareWallet(),
+      getLedgerWallet(),
+      getSlopeWallet(),
+      getCoin98Wallet(),
     ],
     [network]
   );
