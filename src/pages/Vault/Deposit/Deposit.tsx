@@ -79,7 +79,10 @@ export const Deposit: VFC = () => {
 
   const reserveDepositLimit = coin === "usdc" ? 6000000000000 : 5000000000000;
 
-  console.log("magikData[coin].balance", magikData[coin]);
+  const isAbleToDeposit = useMemo(
+    () => amount > 0 && amount <= (magikData[coin].balance ?? 0),
+    [amount, magikData, coin]
+  );
 
   return (
     <Container>
@@ -157,7 +160,10 @@ export const Deposit: VFC = () => {
                 </StatsLabelRegular>
               </StatsRow>
             </Box>
-            <MainCardActionButton onClick={handleFormSubmit}>
+            <MainCardActionButton
+              disabled={!isAbleToDeposit}
+              onClick={handleFormSubmit}
+            >
               Deposit
             </MainCardActionButton>
           </MainCard>

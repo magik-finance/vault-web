@@ -56,9 +56,28 @@ export const Borrow: VFC = () => {
     [magikData.usdc.currentDeposit, magikData.wsol.currentDeposit]
   );
 
+  const maxToBorrow = useMemo(
+    () => (magikData[coin].currentDeposit ?? 0) * (50 / 100),
+    [magikData, coin]
+  );
+
+  const leftToBorrow = useMemo(
+    () => maxToBorrow - (magikData[coin].currentBorrow ?? 0),
+    [magikData, coin, maxToBorrow]
+  );
+
   const borrowAmount = useMemo(
-    () => (magikData[coin].currentDeposit ?? 0) * (collateralRatio / 100),
-    [magikData, collateralRatio, coin]
+    () =>
+      Math.min(
+        (magikData[coin].currentDeposit ?? 0) * (collateralRatio / 100),
+        leftToBorrow
+      ),
+    [magikData, collateralRatio, coin, leftToBorrow]
+  );
+
+  const isAbleToBorrow = useMemo(
+    () => borrowAmount > 0 && borrowAmount <= leftToBorrow,
+    [leftToBorrow, borrowAmount]
   );
 
   const handleCollateralRatioChange = useCallback((value: number) => {
@@ -150,7 +169,10 @@ export const Borrow: VFC = () => {
                 {formatCoinNumber(coin, borrowAmount, { skipLabel: true })}
               </Box>
             </Box>
-            <MainCardActionButton onClick={handleFormSubmit}>
+            <MainCardActionButton
+              onClick={handleFormSubmit}
+              disabled={!isAbleToBorrow}
+            >
               Confirm
             </MainCardActionButton>
           </MainCard>

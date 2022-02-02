@@ -13,6 +13,11 @@ export const SideCardTitle = styled.h2`
 export const MainCardActionButton = styled(Button)`
   width: 100%;
   justify-content: center;
+
+  &[disabled],
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 export const Separator = styled.div`

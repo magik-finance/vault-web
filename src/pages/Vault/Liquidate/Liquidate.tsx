@@ -51,6 +51,11 @@ export const Liquidate: VFC = () => {
     [magikData.usdc.currentBorrow, magikData.wsol.currentBorrow]
   );
 
+  const isAbleToLiquidate = useMemo(
+    () => (magikData[coin].currentBorrow ?? 0) > 0,
+    [magikData, coin]
+  );
+
   const handleFormSubmit: MouseEventHandler<HTMLButtonElement> =
     useCallback(() => {
       liquidate({ coin });
@@ -103,7 +108,10 @@ export const Liquidate: VFC = () => {
               onChange={setCoin}
             />
             <Box height="44px" />
-            <MainCardActionButton onClick={handleFormSubmit}>
+            <MainCardActionButton
+              onClick={handleFormSubmit}
+              disabled={!isAbleToLiquidate}
+            >
               Liquidate your entire position
             </MainCardActionButton>
           </MainCard>
