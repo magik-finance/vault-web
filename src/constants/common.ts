@@ -7,3 +7,10 @@ export const ACTIVE_NETWORK = {
   NAME: WalletAdapterNetwork.Mainnet,
   URL: MAINNET_URL,
 };
+
+export const NOTIFICATION_TYPE = {
+  SUCCESS: "success",
+  INFO: "info",
+  WARNING: "warning",
+  ERROR: "error",
+};

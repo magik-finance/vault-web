@@ -10,10 +10,12 @@ import {
 } from "@solana/web3.js";
 import { Dispatch, SetStateAction, useCallback } from "react";
 
+import { NOTIFICATION_TYPE } from "../constants/common";
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
 import { Loan } from "../utils/useLocalStorage";
 
+import { createNotification } from "./notificationManager";
 import {
   findOrCreateATA,
   getSynthMintAddress,
@@ -89,24 +91,47 @@ export const useBorrow = ({
       console.log("tokenProgram", TOKEN_PROGRAM_ID.toBase58());
       console.log("systemProgram", SystemProgram.programId.toBase58());
 
-      await program.rpc.borrow(new BN(treasureBump), new BN(amount), {
-        accounts: {
-          treasure: treasureAddress,
-          vault: coinConfigs[coin].vault,
-          vaultToken: vaultTokenAddress,
-          userSynth: userSynthAddress,
-          synthMint: synthMintAddress,
-          owner: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-        },
-      });
+      try {
+        const transactionHash = await program.rpc.borrow(
+          new BN(treasureBump),
+          new BN(amount),
+          {
+            accounts: {
+              treasure: treasureAddress,
+              vault: coinConfigs[coin].vault,
+              vaultToken: vaultTokenAddress,
+              userSynth: userSynthAddress,
+              synthMint: synthMintAddress,
+              owner: wallet.publicKey,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              systemProgram: SystemProgram.programId,
+            },
+          }
+        );
 
-      setLoans((previous) => [
-        { amount, coin, timestamp: +new Date() },
-        ...(previous ?? []),
-      ]);
-      await fetchData();
+        setLoans((previous) => [
+          { amount, coin, timestamp: +new Date() },
+          ...(previous ?? []),
+        ]);
+        await fetchData();
+
+        createNotification(
+          NOTIFICATION_TYPE.SUCCESS,
+          `Your request to borrow ${
+            amount / 1000000
+          } ${coin.toUpperCase()} has been successful. Click to view on SolScan`,
+          "Congratulations",
+          5000,
+          transactionHash
+        );
+      } catch (e) {
+        createNotification(
+          NOTIFICATION_TYPE.ERROR,
+          `We ran into an issue while trying to request a loan`,
+          "Error",
+          5000,
+        );
+      }
     },
     [wallet, connection, program, fetchData, setLoans]
   );

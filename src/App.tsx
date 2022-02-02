@@ -1,4 +1,6 @@
 import React from "react";
+// @ts-ignore
+import { NotificationContainer } from "react-notifications";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 
@@ -15,6 +17,7 @@ export const App: React.FC = () => {
       <BrowserRouter>
         <ThemeProvider theme={darkTheme}>
           <MagikDataProvider>
+            <NotificationContainer />
             <GlobalStyle />
             <Layout>
               <Routes />

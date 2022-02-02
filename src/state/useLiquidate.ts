@@ -11,9 +11,11 @@ import {
 } from "@solana/web3.js";
 import { useCallback } from "react";
 
+import { NOTIFICATION_TYPE } from "../constants/common";
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
 
+import { createNotification } from "./notificationManager";
 import {
   findOrCreateATA,
   getSynthMintAddress,
@@ -85,22 +87,40 @@ export const useLiquidate = ({
         await wallet.sendTransaction(transaction, connection);
       }
 
-      await program.rpc.liquidate({
-        accounts: {
-          treasure: treasureAddress,
-          userToken: userTokenAddress,
-          vault: coinConfigs[coin].vault,
-          vaultToken: vaultTokenAddress,
-          synthMint: synthMintAddress,
-          userSynth: userSynthAddress,
-          owner: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      });
+      try {
+        const transactionHash = await program.rpc.liquidate({
+          accounts: {
+            treasure: treasureAddress,
+            userToken: userTokenAddress,
+            vault: coinConfigs[coin].vault,
+            vaultToken: vaultTokenAddress,
+            synthMint: synthMintAddress,
+            userSynth: userSynthAddress,
+            owner: wallet.publicKey,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            rent: SYSVAR_RENT_PUBKEY,
+          },
+        });
 
-      await fetchData();
+        await fetchData();
+
+        createNotification(
+          NOTIFICATION_TYPE.SUCCESS,
+          `Your position has been liquidated. Click to view on SolScan`,
+          "Congratulations",
+          5000,
+          transactionHash
+        );
+
+      } catch (e) {
+        createNotification(
+          NOTIFICATION_TYPE.ERROR,
+          `We ran into an issue while trying to liquidate your position`,
+          "Error",
+          5000,
+        );
+      }
     },
     [wallet, connection, program, fetchData]
   );

@@ -2,6 +2,7 @@ import { createGlobalStyle, css } from "styled-components";
 import "react-popper-tooltip/dist/styles.css";
 import "rc-slider/assets/index.css";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import "react-notifications/lib/notifications.css";
 
 import { fontsCss } from "./fonts-css";
 import { normalizeCss } from "./normalize-css";
