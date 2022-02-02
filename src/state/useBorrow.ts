@@ -13,6 +13,7 @@ import { Dispatch, SetStateAction, useCallback } from "react";
 import { NOTIFICATION_TYPE } from "../constants/common";
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
+import { formatCoinNumber } from "../utils/formatNumber";
 import { Loan } from "../utils/useLocalStorage";
 
 import { createNotification } from "./notificationManager";
@@ -117,9 +118,10 @@ export const useBorrow = ({
 
         createNotification(
           NOTIFICATION_TYPE.SUCCESS,
-          `Your request to borrow ${
-            amount / 1000000
-          } ${coin.toUpperCase()} has been successful. Click to view on SolScan`,
+          `Your request to borrow ${formatCoinNumber(
+            coin,
+            amount
+          )}} has been successful. Click to view on SolScan`,
           "Congratulations",
           5000,
           transactionHash
@@ -129,7 +131,7 @@ export const useBorrow = ({
           NOTIFICATION_TYPE.ERROR,
           `We ran into an issue while trying to request a loan`,
           "Error",
-          5000,
+          5000
         );
       }
     },

@@ -112,13 +112,12 @@ export const useLiquidate = ({
           5000,
           transactionHash
         );
-
       } catch (e) {
         createNotification(
           NOTIFICATION_TYPE.ERROR,
           `We ran into an issue while trying to liquidate your position`,
           "Error",
-          5000,
+          5000
         );
       }
     },

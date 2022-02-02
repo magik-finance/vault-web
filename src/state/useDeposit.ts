@@ -14,6 +14,7 @@ import { Dispatch, SetStateAction, useCallback } from "react";
 import { NOTIFICATION_TYPE } from "../constants/common";
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
+import { formatCoinNumber } from "../utils/formatNumber";
 import { Deposit } from "../utils/useLocalStorage";
 
 import { createNotification } from "./notificationManager";
@@ -119,9 +120,10 @@ export const useDeposit = ({
 
         createNotification(
           NOTIFICATION_TYPE.SUCCESS,
-          `Your deposit out of ${
-            amount / 1000000
-          } ${coin.toUpperCase()} has been successful. Click to view on SolScan`,
+          `Your deposit out of ${formatCoinNumber(
+            coin,
+            amount
+          )}} has been successful. Click to view on SolScan`,
           "Congratulations",
           5000,
           transactionHash
@@ -131,7 +133,7 @@ export const useDeposit = ({
           NOTIFICATION_TYPE.ERROR,
           `We ran into an issue while trying to deposit from your wallet`,
           "Error",
-          5000,
+          5000
         );
       }
     },
