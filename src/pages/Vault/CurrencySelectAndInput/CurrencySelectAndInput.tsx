@@ -16,6 +16,7 @@ import {
   SelectFieldItemContentType,
   SelectFieldProps,
 } from "../../../components/SelectField";
+import { Coin } from "../../../constants/solana";
 import { formatNumber } from "../../../utils/formatNumber";
 import { minMax } from "../../../utils/minMax";
 
@@ -29,7 +30,7 @@ import {
 } from "./CurrencySelectAndInput.styles";
 
 export interface CurrencySelectAndInputOption {
-  value: string;
+  value: Coin;
   label: string;
   iconName: IconName;
   max?: number;
@@ -43,7 +44,7 @@ interface Props
   options: CurrencySelectAndInputOption[];
   optionValue: SelectFieldProps["value"];
   amountValue: number;
-  onOptionChange: SelectFieldProps["onChange"];
+  onOptionChange: (coin: Coin) => void;
   onAmountChange: (amount: number) => void;
 }
 
@@ -112,7 +113,7 @@ export const CurrencySelectAndInput: VFC<Props> = ({
 
   const handleOptionChange = useCallback(
     (newOptionValue: string) => {
-      onOptionChange(newOptionValue);
+      onOptionChange(newOptionValue as Coin);
       onAmountChange(0);
     },
     [onOptionChange, onAmountChange]

@@ -399,7 +399,7 @@ export type VaultProgram = {
   ];
   accounts: [
     {
-      name: "Vault";
+      name: "vault";
       type: {
         kind: "struct";
         fields: [
@@ -435,7 +435,7 @@ export type VaultProgram = {
       };
     },
     {
-      name: "Treasure";
+      name: "treasure";
       type: {
         kind: "struct";
         fields: [
@@ -937,7 +937,7 @@ export const VaultIdl: VaultProgram = {
   ],
   accounts: [
     {
-      name: "Vault",
+      name: "vault",
       type: {
         kind: "struct",
         fields: [
@@ -973,7 +973,7 @@ export const VaultIdl: VaultProgram = {
       },
     },
     {
-      name: "Treasure",
+      name: "treasure",
       type: {
         kind: "struct",
         fields: [

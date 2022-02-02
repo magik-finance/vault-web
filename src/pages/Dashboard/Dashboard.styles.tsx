@@ -69,7 +69,7 @@ export const DetailsTitle = styled.h3`
   line-height: 1;
 `;
 export const StatsValue = styled.div`
-  font-size: 32px;
+  font-size: 28px;
   line-height: 1;
 `;
 export const StatsLabel = styled.div`
@@ -124,7 +124,7 @@ export const Cards = styled.main`
 export const InnerContainer = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.sizing.pageContentMaxWidth}px;
-  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px;
+  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px 96px;
   padding-top: 58px;
 `;
 

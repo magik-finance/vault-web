@@ -7,6 +7,7 @@ import {
   SelectFieldItemContentType,
   SelectFieldProps,
 } from "../../../components/SelectField";
+import { Coin } from "../../../constants/solana";
 
 import {
   AmountLabelWrapper,
@@ -16,15 +17,19 @@ import {
 } from "./CurrencySelect.styles";
 
 export interface CurrencySelectOption {
-  value: string;
+  value: Coin;
   label: string;
   iconName: IconName;
   amount?: string;
   amountLabel?: string;
 }
 interface Props
-  extends Omit<SelectFieldProps, "ItemContent" | "ButtonContent" | "options"> {
+  extends Omit<
+    SelectFieldProps,
+    "ItemContent" | "ButtonContent" | "options" | "onChange"
+  > {
   options: CurrencySelectOption[];
+  onChange: (coin: Coin) => void;
 }
 
 export const CurrencySelect: VFC<Props> = ({
@@ -94,7 +99,7 @@ export const CurrencySelect: VFC<Props> = ({
     <SelectField
       className={className}
       options={selectFieldOptions}
-      onChange={onChange}
+      onChange={onChange as (value: string) => void}
       ButtonContent={ButtonContent}
       ItemContent={ItemContent}
       value={value}

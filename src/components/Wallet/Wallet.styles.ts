@@ -22,11 +22,13 @@ export const WalletButton = styled.div`
   line-height: 1;
   transition: color 0.3s ease;
 
-  &:hover {
-    color: ${({ theme }) => theme.colors.selectedFont};
+  .wallet-adapter-button-trigger {
+    background-color: transparent;
+    line-height: 1;
+    height: 36px;
 
-    & > ${WalletIcon} {
-      color: inherit;
+    &:hover {
+      color: ${({ theme }) => theme.colors.selectedFont};
     }
   }
 `;

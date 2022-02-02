@@ -13,6 +13,11 @@ export const SideCardTitle = styled.h2`
 export const MainCardActionButton = styled(Button)`
   width: 100%;
   justify-content: center;
+
+  &[disabled],
+  &:disabled {
+    opacity: 0.5;
+  }
 `;
 
 export const Separator = styled.div`
@@ -86,7 +91,7 @@ export const Cards = styled.main`
 export const InnerContainer = styled.div`
   width: 100%;
   max-width: ${({ theme }) => theme.sizing.pageContentMaxWidth}px;
-  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px;
+  padding: 0 ${({ theme }) => theme.sizing.pageSidePaddingPx}px 96px;
   padding-top: 58px;
 `;
 
