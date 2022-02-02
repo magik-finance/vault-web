@@ -60,7 +60,7 @@ export const Deposit: VFC = () => {
       },
       {
         value: "wsol",
-        label: "wSOL",
+        label: "SOL",
         iconName: "solana-coin",
         max: coinAmountIntegerToFloat("wsol", magikData.wsol.balance),
       },

@@ -46,7 +46,7 @@ export const Borrow: VFC = () => {
       },
       {
         iconName: "solana-coin",
-        label: "wSOL",
+        label: "SOL",
         value: "wsol",
         amount: formatCoinNumber("wsol", magikData.wsol.currentDeposit ?? 0, {
           skipLabel: true,
