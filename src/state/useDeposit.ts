@@ -123,7 +123,7 @@ export const useDeposit = ({
           `Your deposit out of ${formatCoinNumber(
             coin,
             amount
-          )}} has been successful. Click to view on SolScan`,
+          )} has been successful. Click to view on SolScan`,
           "Congratulations",
           5000,
           transactionHash
