@@ -8,10 +8,6 @@ import { formatCoinNumber } from "../../utils/formatNumber";
 import {
   Cards,
   Container,
-  DetailsLabel,
-  DetailsRow,
-  DetailsTitle,
-  DetailsValue,
   InnerContainer,
   MainCard,
   PageTitle,
