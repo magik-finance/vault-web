@@ -11,10 +11,13 @@ import {
 } from "@solana/web3.js";
 import { Dispatch, SetStateAction, useCallback } from "react";
 
+import { NOTIFICATION_TYPE } from "../constants/common";
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
+import { formatCoinNumber } from "../utils/formatNumber";
 import { Deposit } from "../utils/useLocalStorage";
 
+import { createNotification } from "./notificationManager";
 import {
   findOrCreateATA,
   getSynthMintAddress,
@@ -89,26 +92,50 @@ export const useDeposit = ({
         await wallet.sendTransaction(transaction, connection);
       }
 
-      await program.rpc.deposit(new BN(treasureBump), new BN(amount), {
-        accounts: {
-          treasure: treasureAddress,
-          userToken: userTokenAddress,
-          vault: coinConfigs[coin].vault,
-          vaultToken: vaultTokenAddress,
-          userSynth: userSynthAddress,
-          owner: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          systemProgram: SystemProgram.programId,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      });
+      try {
+        const transactionHash = await program.rpc.deposit(
+          new BN(treasureBump),
+          new BN(amount),
+          {
+            accounts: {
+              treasure: treasureAddress,
+              userToken: userTokenAddress,
+              vault: coinConfigs[coin].vault,
+              vaultToken: vaultTokenAddress,
+              userSynth: userSynthAddress,
+              owner: wallet.publicKey,
+              tokenProgram: TOKEN_PROGRAM_ID,
+              systemProgram: SystemProgram.programId,
+              rent: SYSVAR_RENT_PUBKEY,
+            },
+          }
+        );
 
-      setDeposits((previous) => [
-        { amount, coin, timestamp: +new Date() },
-        ...(previous ?? []),
-      ]);
+        setDeposits((previous) => [
+          { amount, coin, timestamp: +new Date() },
+          ...(previous ?? []),
+        ]);
 
-      await fetchData();
+        await fetchData();
+
+        createNotification(
+          NOTIFICATION_TYPE.SUCCESS,
+          `Your deposit out of ${formatCoinNumber(
+            coin,
+            amount
+          )}} has been successful. Click to view on SolScan`,
+          "Congratulations",
+          5000,
+          transactionHash
+        );
+      } catch (e) {
+        createNotification(
+          NOTIFICATION_TYPE.ERROR,
+          `We ran into an issue while trying to deposit from your wallet`,
+          "Error",
+          5000
+        );
+      }
     },
     [wallet, connection, program, fetchData, setDeposits]
   );
