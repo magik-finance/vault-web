@@ -8,10 +8,11 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 
 import { Coin, coinConfigs } from "../constants/solana";
 import { VaultProgram } from "../interfaces/vault";
+import { Loan } from "../utils/useLocalStorage";
 
 import {
   findOrCreateATA,
@@ -26,6 +27,7 @@ export interface UseBorrowProps {
   program: Program<VaultProgram> | undefined;
   connection: Connection;
   fetchData: () => Promise<void>;
+  setLoans: Dispatch<SetStateAction<Loan[] | undefined>>;
 }
 
 export interface BorrowProps {
@@ -38,6 +40,7 @@ export const useBorrow = ({
   program,
   connection,
   fetchData,
+  setLoans,
 }: UseBorrowProps) =>
   useCallback(
     async ({ coin, amount }: BorrowProps) => {
@@ -99,7 +102,11 @@ export const useBorrow = ({
         },
       });
 
+      setLoans((previous) => [
+        { amount, coin, timestamp: +new Date() },
+        ...(previous ?? []),
+      ]);
       await fetchData();
     },
-    [wallet, connection, program, fetchData]
+    [wallet, connection, program, fetchData, setLoans]
   );

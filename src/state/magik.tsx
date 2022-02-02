@@ -28,6 +28,7 @@ export const MagikDataProvider: FC = ({ children }) => {
   const isDataInitializedRef = useRef(false);
   const [data, setData] = useState<MagikData>(defaultData);
   const [deposits, setDeposits] = useLocalStorage("deposits");
+  const [loans, setLoans] = useLocalStorage("loans");
   const { connection } = useConnection();
   const wallet = useWallet();
   const program = useProgram();
@@ -46,7 +47,13 @@ export const MagikDataProvider: FC = ({ children }) => {
     fetchData,
     setDeposits,
   });
-  const borrow = useBorrow({ wallet, connection, program, fetchData });
+  const borrow = useBorrow({
+    wallet,
+    connection,
+    program,
+    fetchData,
+    setLoans,
+  });
   const liquidate = useLiquidate({ wallet, connection, program, fetchData });
 
   /** initial fetch */
@@ -58,12 +65,13 @@ export const MagikDataProvider: FC = ({ children }) => {
     () => ({
       magikData: data,
       deposits: deposits ?? [],
+      loans: loans ?? [],
       refetchMagikData: fetchData,
       deposit,
       borrow,
       liquidate,
     }),
-    [data, deposits, fetchData, deposit, borrow, liquidate]
+    [data, deposits, loans, fetchData, deposit, borrow, liquidate]
   );
 
   return (

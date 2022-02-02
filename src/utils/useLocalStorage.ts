@@ -8,8 +8,11 @@ export interface Deposit {
   timestamp: number;
 }
 
+export interface Loan extends Deposit {}
+
 export interface LocalStorageTypes {
   deposits: Deposit[];
+  loans: Loan[];
 }
 
 const getStorageValue = <LocalStorageType extends any>(

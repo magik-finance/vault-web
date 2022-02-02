@@ -1,5 +1,5 @@
 import { Coin } from "../constants/solana";
-import { Deposit } from "../utils/useLocalStorage";
+import { Deposit, Loan } from "../utils/useLocalStorage";
 
 import { BorrowProps } from "./useBorrow";
 import { DepositProps } from "./useDeposit";
@@ -18,6 +18,7 @@ export interface MagikData extends Record<Coin, MagikCoinData> {
 export interface MagikDataContextValue {
   magikData: MagikData;
   deposits: Deposit[];
+  loans: Loan[];
   refetchMagikData: () => void;
   deposit: (props: DepositProps) => Promise<void>;
   borrow: (props: BorrowProps) => Promise<void>;

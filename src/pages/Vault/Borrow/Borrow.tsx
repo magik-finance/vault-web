@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, VFC } from "react";
+import { MouseEventHandler, useCallback, useMemo, useState, VFC } from "react";
 
 import { Box } from "../../../components/Box";
 import { Icon } from "../../../components/Icon";
@@ -19,15 +19,20 @@ import {
   MainCardDivider,
   SelectCollateralField,
   SelectCollateralTitle,
+  Separator,
   SideCard,
   SideCardTitle,
+  StatsLabelMedium,
+  StatsLabelRegular,
+  StatsRow,
+  StatsTitle,
 } from "../Vault.styles";
 import { VaultMenu } from "../VaultMenu";
 
 export const Borrow: VFC = () => {
   const [coin, setCoin] = useState<Coin>("usdc");
   const [collateralRatio, setCollateralRatio] = useState(25);
-  const { borrow, magikData } = useMagikData();
+  const { borrow, magikData, loans } = useMagikData();
 
   const collateralOptions: CurrencySelectOption[] = useMemo(
     () => [
@@ -51,7 +56,6 @@ export const Borrow: VFC = () => {
     [magikData.usdc.currentDeposit, magikData.wsol.currentDeposit]
   );
 
-  console.log("collateralRatio", collateralRatio);
   const borrowAmount = useMemo(
     () => (magikData[coin].currentDeposit ?? 0) * (collateralRatio / 100),
     [magikData, collateralRatio, coin]
@@ -60,6 +64,11 @@ export const Borrow: VFC = () => {
   const handleCollateralRatioChange = useCallback((value: number) => {
     setCollateralRatio(value);
   }, []);
+
+  const handleFormSubmit: MouseEventHandler<HTMLButtonElement> =
+    useCallback(() => {
+      borrow({ coin, amount: borrowAmount });
+    }, [borrow, coin, borrowAmount]);
 
   return (
     <Container>
@@ -141,7 +150,7 @@ export const Borrow: VFC = () => {
                 {formatCoinNumber(coin, borrowAmount, { skipLabel: true })}
               </Box>
             </Box>
-            <MainCardActionButton onClick={() => borrow({ coin, amount: 1 })}>
+            <MainCardActionButton onClick={handleFormSubmit}>
               Confirm
             </MainCardActionButton>
           </MainCard>
@@ -161,6 +170,36 @@ export const Borrow: VFC = () => {
                 magikData[coin].balance ?? 0
               )}`}
             />
+            <Box height="44px" />
+            <StatsTitle>Recent loans</StatsTitle>
+            <Box height="24px" />
+            <Separator />
+            <Box
+              display="flex"
+              width="100%"
+              flexDirection="column"
+              padding="24px 0"
+              gap="24px"
+            >
+              {loans.map(({ amount, coin, timestamp }) => (
+                <StatsRow key={timestamp}>
+                  <StatsLabelRegular>
+                    {new Date(timestamp).toLocaleDateString("en-US", {
+                      dateStyle: "medium",
+                    })}
+                  </StatsLabelRegular>
+                  <StatsLabelMedium>
+                    {formatCoinNumber(coin, amount)}
+                  </StatsLabelMedium>
+                </StatsRow>
+              ))}
+              {loans.length === 0 ? (
+                <Box fontWeight="500" color="fadedOutFont">
+                  No loans yet
+                </Box>
+              ) : null}
+            </Box>
+            <Separator />
           </SideCard>
         </Cards>
       </InnerContainer>

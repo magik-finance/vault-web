@@ -94,7 +94,9 @@ export const Dashboard: VFC = () => {
             <StatsRow>
               <Stats>
                 <StatsLabel>Collateral deposited</StatsLabel>
-                <StatsValue>{formatCoinNumber("usdc", deposited)}</StatsValue>
+                <StatsValue>
+                  {formatCoinNumber("usdc", deposited ?? 0)}
+                </StatsValue>
               </Stats>
               <Stats>
                 <StatsLabel>Max Utilization</StatsLabel>

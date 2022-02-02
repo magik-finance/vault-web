@@ -12,8 +12,6 @@ import {
 import { clusterApiUrl } from "@solana/web3.js";
 import React, { useMemo, PropsWithChildren, FC } from "react";
 
-require("@solana/wallet-adapter-react-ui/styles.css");
-
 export const WalletWrapper: FC = (props: PropsWithChildren<any>) => {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
