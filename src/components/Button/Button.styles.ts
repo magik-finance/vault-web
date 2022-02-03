@@ -31,7 +31,8 @@ const buttonColorfulCss = css`
 `;
 
 const buttonQuietCss = css`
-  outline: 1px solid ${({ theme }) => theme.colors.border};
+  outline: none;
+  box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.border};
 
   &:hover {
     color: ${({ theme }) => theme.colors.selectedFont};

@@ -57,7 +57,8 @@ export const SelectFieldButton = styled.div.attrs({ role: "button" })<{
 }>`
   width: ${({ $width }) => $width};
   height: 58px;
-  outline: 1px solid ${({ theme }) => theme.colors.border};
+  outline: none;
+  box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.border};
   border-radius: 9999px;
   display: flex;
   align-items: center;
