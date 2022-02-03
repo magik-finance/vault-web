@@ -112,6 +112,7 @@ export const SideCard = styled(Card)`
 
 export const MainCard = styled(Card)`
   width: 63%;
+  padding-bottom: 24px;
 `;
 
 export const Cards = styled.main`
