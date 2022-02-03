@@ -5,6 +5,7 @@ import { BORROW, DEPOSIT, LIQUIDATE } from "../../constants/routes";
 import { useMagikData } from "../../state/magik";
 import { formatCoinNumber } from "../../utils/formatNumber";
 
+import { Chart } from "./Chart";
 import {
   Cards,
   Container,
@@ -103,6 +104,7 @@ export const Dashboard: VFC = () => {
                 <StatsValue>50%</StatsValue>
               </Stats>
             </StatsRow>
+            <Chart />
           </MainCard>
           <SideCard>
             <SideCardSections>
